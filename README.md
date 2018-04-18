@@ -23,9 +23,12 @@
 
 5.nmon运行结束后，自动生成html格式报告
 
+6.CentOS6和7测试通过，其它系统和版本需要去nmon官方下载，并改名为nmon16e替换即可
+
 有问题可以联系我：mzky@163.com
 
-说明：
+
+引用：
 
 go的http框架采用gin：https://gin-gonic.github.io/gin/
 
