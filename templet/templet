@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>服务器性能监控报告</title>
+		<!-- 引入 echarts.js -->
+		<script src="js/echarts.min.js"></script>
+	</head>
+	<body>
+		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+		<div id="cpu" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="mem" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="net" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="disk" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化echarts实例
+			var cpuChart = echarts.init(document.getElementById('cpu'));
+			var memChart = echarts.init(document.getElementById('mem'));
+			var netChart = echarts.init(document.getElementById('net'));
+			var diskChart = echarts.init(document.getElementById('disk'));
+			//变量定义
+			var script="scripts";//场景脚本
+			var xAxisdata=[xAxisdatas];
+			var cpuUser=[cpuUsers];
+			var cpuSys=[cpuSyss];
+			var cpuWait=[cpuWaits];
+			var memfree=[memfrees];
+			var NetRead=[NetReads];
+			var NetWrite=[NetWrites];
+			var DiskRead=[DiskReads];
+			var DiskWrite=[DiskWrites];
+//////////////////////// CPU
+			var CPU = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-CPU总体占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['User%', 'Sys%', 'Wait%']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'User%',
+						type: 'line',
+						stack: '总量',
+						itemStyle: {
+							normal: {
+								color: '#006699'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuUser
+					},
+					{
+						name: 'Sys%',
+						stack: '总量',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#66CC99'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuSys
+					},
+					{
+						name: 'Wait%',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#CC3333'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuWait
+					}
+				]
+			};
+
+//////////////////////// MEM
+			var MEM = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-实际内存占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['memfree']
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				xAxis: [{
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				}],
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'memfree',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#0099CC'
+							}
+						},
+						data: memfree
+					}]
+			};
+			
+//////////////////////// NET		
+			var NET = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-网络带宽占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['Total-Read', 'Total-Write']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'Total-Read',
+						type: 'line',
+						areaStyle: {normal: {}},
+						data: NetRead
+					},
+					{
+						name: 'Total-Write',
+						type: 'line',
+						areaStyle: {normal: {}},
+						data: NetWrite
+					}
+				]
+			};
+			
+//////////////////////// DISK		
+			var DISK = {
+				backgroundColor: "#F2F8FF",
+				title: {
+					left: 'center',
+					text: script + '-磁盘IO及读写速率'
+				},
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						animation: false
+					}
+				},
+				legend: {
+					top: '25',
+					left: 'center',
+					data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: {
+							pixelRatio: 2
+						} //放大两倍
+					}
+				},				
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'DiskRead KB/s',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#FF9966'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: DiskRead
+					},
+					{
+						name: 'DiskWrite KB/s',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#6699CC'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: DiskWrite
+					}
+				]
+			};
+
+
+			cpuChart.setOption(CPU);
+			memChart.setOption(MEM);
+			netChart.setOption(NET);
+			diskChart.setOption(DISK);
+		</script>
+	</body>
+
+</html>
