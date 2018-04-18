@@ -24,3 +24,8 @@
 5.nmon运行结束后，自动生成html格式报告
 
 有问题可以联系我：mzky@163.com
+
+说明：
+go的http框架采用gin：https://gin-gonic.github.io/gin/
+图表插件采用百度的echarts：http://echarts.baidu.com/
+新版nmon下载地址：http://nmon.sourceforge.net/
