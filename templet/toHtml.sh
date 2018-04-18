@@ -2,7 +2,7 @@
 #将nmon报告筛选出关键信息
 array=(ZZZZ CPU_ALL DISKREAD DISKWRITE MEM NET,)
 for name in ${array[@]}  
-do 
+do
 	cat $1.nmon |grep $name|awk -F',' '{OFS=","}{NF=NF;$1="tmp";print}'|sed 's/tmp,//g' >$name
 done  
 #net总列数

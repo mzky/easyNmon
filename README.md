@@ -1,24 +1,14 @@
 # 为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
 非常适合配合Loadrunner性能测试框架使用
-nmon服务包下载：monitor.zip
 
-下载解压到被测性能的服务器，并附权限
-
-
-
+1.下载解压到被测性能的服务器，并附权限
 执行./monitor& 即可（后缀加&为后台执行）
 
+2.默认端口8080，如需修改 加上-port 端口号 如下图
 
-默认端口8080，如需修改 加上-port 端口号 如下图
+3.执行后通过loadrunner调用开始和结束
 
-
-执行时可通过loadrunner调用开始和结束
-
-例如下图的pdf，那么文件名为pdf.nmon
-
-如将pdf修改为stop，将停止所有nmon进程
-
-Loadrunner例子：
+4.Loadrunner例子：
 
 将脚本放到init下，每次测试仅执行一次
 
@@ -30,8 +20,5 @@ Loadrunner例子：
 		       "URL=http://192.168.136.91:8080/pdf",
                        "Method=GET",
 		       LAST);
-执行效果：
 
-
-自动生成html格式报告：
-
+5.nmon运行结束后，自动生成html格式报告
