@@ -17,3 +17,7 @@ go的http框架采用gin：https://gin-gonic.github.io/gin/
 图表插件采用百度的echarts：http://echarts.baidu.com/
 
 新版nmon下载地址：http://nmon.sourceforge.net/
+
+更新日志：
+1.变更get参数格式，增加监控时间参数
+2.使用日期+场景名方式保存报告，避免场景重复
