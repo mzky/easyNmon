@@ -5,7 +5,7 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 
 
-
+#
 更新日志：
 
 2018.04.27
@@ -15,7 +15,7 @@ https://www.jianshu.com/p/c7c36ba14d3e
 2.使用日期+场景名方式保存报告，避免场景重复
 
 
-
+#
 后期规划：
 
 与LR批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
@@ -23,12 +23,12 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 
 
-
+#
 联系：mzky@163.com
 
 
 
-
+#
 引用：
 
 go的http框架采用gin：https://gin-gonic.github.io/gin/
