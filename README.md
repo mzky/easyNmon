@@ -18,6 +18,8 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 4.增加/close关闭自身接口
 
+5.修改线程执行方式
+
 
 2018.04.27
 
