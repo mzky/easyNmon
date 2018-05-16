@@ -1,5 +1,5 @@
 #!/bin/bash
-file=`date "+%Y%m%d%H%M%S"`_$1
+file=$1_`date "+%Y%m%d%H%M%S"`
 cp -rf templet report/$file
 ./nmon -f -t -s $2 -c 60 -m report/$file -F $1
 cd report/$file
