@@ -25,10 +25,13 @@ func main() {
 		name := c.DefaultQuery("n", "name")  //取name值
 		time := c.DefaultQuery("t", "30") //取执行时间,单位分钟
 		lsCmd := exec.Command("/bin/sh", "-c", "./nmonCTL.sh "+name+" "+time)
-		err := lsCmd.Start()  
-		if err!=nil{
-		       	fmt.Println(err)
-		}	
+		
+		go func(){
+			err := lsCmd.Run()  
+			if err!=nil{
+			       	fmt.Println(err)
+			}	
+		}()
 		c.JSON(200, gin.H{
 		      	"message": string("已执行"+name+"场景监控，持续时间"+time+"分钟"),
 		})
