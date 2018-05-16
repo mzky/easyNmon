@@ -105,7 +105,7 @@
 				backgroundColor:"#F2F8FF",
 				title: {
 					x: 'center',
-					text: script+'-实际内存占用情况'
+					text: script+'-空闲内存曲线'
 				},
 				tooltip: {
 			        trigger: 'axis',
