@@ -25,6 +25,7 @@
 			var cpuSys=[cpuSyss];
 			var cpuWait=[cpuWaits];
 			var memfree=[memfrees];
+			var memtotal=[memtotals];
 			var NetRead=[NetReads];
 			var NetWrite=[NetWrites];
 			var DiskRead=[DiskReads];
@@ -105,7 +106,7 @@
 				backgroundColor:"#F2F8FF",
 				title: {
 					x: 'center',
-					text: script+'-空闲内存曲线'
+					text: script+'-内存使用情况'
 				},
 				tooltip: {
 			        trigger: 'axis',
@@ -115,7 +116,7 @@
 			    },
 				legend: {
 					top:'25',x: 'center',
-					data: ['memfree']
+					data: ['memtotal','memfree']
 				},
 				toolbox: {
 					right: '6%',
@@ -133,7 +134,7 @@
 					data: xAxisdata
 				}],
 				yAxis: { type: 'value' },
-				series: [{
+				series: [{			
 						name: 'memfree',
 						type: 'line',
 						itemStyle: {
@@ -142,6 +143,15 @@
 							}
 						},
 						data: memfree
+					}, {
+						name: 'memtotal',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#CC3333'
+							}
+						},
+						data: memtotal
 					}]
 			};
 			
@@ -160,7 +170,7 @@
 			    },
 				legend: {
 					top:'25',x: 'center',
-					data: ['Total-Read', 'Total-Write']
+					data: ['Total-Read KB/s', 'Total-Write KB/s']
 				},
 				grid: {
 					top:'15%',left: '3%',right: '3%',bottom: '10%',
@@ -179,13 +189,13 @@
 				},
 				yAxis: { type: 'value' },
 				series: [{
-						name: 'Total-Read',
+						name: 'Total-Read KB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetRead
 					},
 					{
-						name: 'Total-Write',
+						name: 'Total-Write KB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetWrite

@@ -37,6 +37,7 @@ xAxisdatas=""
 cpuUsers=""
 cpuSyss=""
 cpuWaits=""
+memtotals=""
 memfrees=""
 NetReads=""
 NetWrites=""
@@ -79,12 +80,16 @@ while read LINE
 do
 	if [[ "$memfrees" == "" ]]
 	then	
+		memtotals=`echo $LINE |awk -F',' '{print $2}'`
 		memfrees=`echo $LINE |awk -F',' '{print $6}'`
 	else
+		memtotals=$memtotals","`echo $LINE |awk -F',' '{print $2}'`
 		memfrees=$memfrees","`echo $LINE |awk -F',' '{print $6}'`
 	fi
 done < MEM
+memtotals=(`echo $memtotals|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
 memfrees=(`echo $memfrees|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
+sed -i "s/memtotals/$memtotals/g" index.html
 sed -i "s/memfrees/$memfrees/g" index.html
 #取net指标
 while read LINE
