@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>服务器性能监控报告</title>
+		<!-- 引入 echarts.js -->
+		<script src="js/echarts.min.js"></script>
+	</head>
+	<body>
+		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+		<div id="cpu" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="mem" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="net" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="disk" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化echarts实例
+			var cpuChart = echarts.init(document.getElementById('cpu'));
+			var memChart = echarts.init(document.getElementById('mem'));
+			var netChart = echarts.init(document.getElementById('net'));
+			var diskChart = echarts.init(document.getElementById('disk'));
+			//变量定义
+			var script="pdf";//场景脚本
+			var xAxisdata=["19:28:50","19:29:20","19:29:52","19:30:22","19:30:53","19:31:23","19:31:53","19:32:23","19:32:53","19:33:23","19:33:53","19:34:23","19:34:53","19:35:23","19:35:53","19:36:23","19:36:53","19:37:23","19:37:53","19:38:23","19:38:53","19:39:23","19:39:53","19:40:23","19:40:53","19:41:23","19:41:53","19:42:23","19:42:53","19:43:23","19:43:53","19:44:23","19:44:53","19:45:23","19:45:53","19:46:23","19:46:53","19:47:24","19:47:54","19:48:24","19:48:54","19:49:24","19:49:54","19:50:24","19:50:54","19:51:24","19:51:54","19:52:24","19:52:54","19:53:24","19:53:54","19:54:24","19:54:54","19:55:24","19:55:54","19:56:24","19:56:54","19:57:24","19:57:54","19:58:24","19:58:54"];
+			var cpuUser=[55.6,51.8,47.0,46.1,47.8,48.8,48.9,46.9,47.9,48.5,47.2,51.3,47.6,47.4,46.3,45.6,50.9,48.6,48.4,49.3,49.5,48.3,48.9,46.4,49.1,47.6,45.7,51.0,46.7,47.9,47.1,48.0,49.3,47.5,48.6,31.4,34.1,39.8,39.7,41.6,44.2,39.0,45.9,41.4,45.9,43.9,44.9,47.9,44.5,44.1,46.5,43.9,42.5,40.4,43.1,45.1,43.9,41.5,37.0,40.7,31.9];
+			var cpuSys=[1.7,1.7,1.8,1.6,1.7,1.7,1.7,1.7,1.6,1.8,1.6,1.8,1.7,1.7,1.7,1.6,1.8,1.7,1.7,1.7,1.7,1.7,1.7,1.6,1.8,1.7,1.6,1.8,1.6,1.7,1.7,1.7,1.7,1.6,1.7,5.9,1.3,1.5,1.4,1.5,1.6,4.8,1.7,1.5,1.6,1.5,2.3,1.7,1.6,1.6,1.6,3.3,1.5,1.5,1.5,1.6,1.5,2.0,1.3,1.5,1.3];
+			var cpuWait=[0.7,0.2,0.5,0.4,0.4,0.3,0.4,0.4,0.5,0.4,0.4,0.3,0.5,0.4,0.5,0.6,0.2,0.4,0.4,0.4,0.4,0.4,0.3,0.4,0.4,0.5,0.5,0.2,0.4,0.5,0.5,0.4,0.2,0.4,0.5,0.9,0.6,0.5,0.6,0.6,0.6,0.6,0.3,0.6,0.5,0.5,0.6,0.3,0.6,0.5,0.6,0.5,0.4,0.7,0.6,0.7,0.5,0.5,0.8,0.7,0.7];
+			var memfree=[20075.3,19731.3,19508.4,19220.3,19190.7,18965.0,18703.7,18557.1,18335.4,18316.8,18016.3,17730.0,17564.7,17307.1,17227.9,16978.3,16749.8,16601.0,16342.2,16210.1,15898.0,15594.2,15386.7,15081.6,15049.3,14743.9,14447.9,14254.5,13940.5,13634.1,13534.7,13272.0,13062.1,12749.9,12454.0,14837.8,14656.9,14369.4,14181.3,13904.4,13614.5,15867.1,16075.2,15901.8,15599.8,15310.0,17002.1,16815.2,16527.9,16520.9,16223.8,18101.8,17810.7,17712.1,17522.3,17222.5,16933.2,18018.6,17798.1,17521.8,17813.8];
+			var NetRead=[55770.9,51442.2,46508,46313.5,48797.7,49305.8,49317.3,48252.3,47407.7,47866,48569.6,51111.6,48278,47872.4,46938,46094.9,50287.8,48683,48203,49273.2,49451.4,48909.3,48880.4,47786.2,48519.1,48593.7,47685.9,49956.1,48439.5,48853.8,46727.6,48727.4,49722.4,47543.2,49084.8,34915,38344.5,44351.8,42528,43754.2,46483.1,41877,48300.1,43782.3,47936.5,45602.7,45976.1,48855.5,46062.6,46103.7,47769.7,44933.6,46504.5,42966.7,44847.3,46656.6,45092.9,44596,41040.8,43291.3,35129.3];
+			var NetWrite=[-47946.1,-47494.6,-42530.8,-42611.3,-44863.7,-45313.4,-45242.5,-44225.9,-43482.1,-43929.2,-44505.2,-46943.8,-44303.2,-43964.8,-43019.6,-42344.9,-46281.2,-44485.6,-44301,-45221.4,-45420.8,-44896.7,-44824.4,-43873,-44550.3,-44591.3,-43661.5,-45905.1,-44408.5,-44859,-42897.8,-44671.6,-45604,-43681.2,-44995.8,-32020.6,-35224.1,-40686.8,-39010,-40163,-42642.9,-38468.4,-44374.3,-40085.7,-44027.9,-41777.7,-42262.9,-44785.1,-42260.6,-42368.9,-43776.3,-41242.6,-42657.1,-39397.1,-41157.1,-42825,-41389.1,-41002.6,-37579.8,-39756.5,-33480.1];
+			var DiskRead=[1059.0,11.1,9.0,5.9,8.2,4.7,2.8,1.6,1.1,1.2,5.7,1.1,0.5,4.9,11.1,416.8,2.1,1.5,4.5,0.5,0.8,0.8,0.4,0.8,0.5,0.5,0.5,3.5,0.4,2.9,0.4,0.3,5.2,0.5,19.8,169.6,113.0,89.9,60.5,39.7,27.3,90.5,30.0,131.3,20.7,17.2,25.0,16.4,14.1,17.9,10.9,34.4,58.0,48.9,36.5,46.5,16.5,77.0,61.3,56.0,50.6];
+			var DiskWrite=[-746.8,-1790.3,-12480.9,-11673.7,-11993.0,-11366.0,-11022.4,-12710.8,-11145.9,-12264.0,-12198.2,-10426.8,-12456.9,-12458.6,-11110.9,-12306.7,-10312.6,-11985.4,-12573.1,-11104.1,-12664.0,-12553.5,-10564.7,-11918.9,-10788.3,-12986.3,-12539.0,-10286.2,-12309.2,-12545.2,-11351.5,-12181.7,-11479.6,-10904.8,-12524.8,-10702.6,-9352.8,-9223.8,-10125.3,-10957.5,-11766.0,-9966.5,-10256.9,-12654.4,-10300.9,-12401.3,-10129.4,-10816.1,-12981.0,-10464.0,-12432.3,-10824.1,-11136.0,-9931.2,-11297.8,-10610.3,-12053.0,-10553.3,-10512.5,-10957.6,-10414.0];
+//////////////////////// CPU
+			var CPU = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-CPU总体占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['User%', 'Sys%', 'Wait%']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'User%',
+						type: 'line',
+						stack: '总量',
+						itemStyle: {
+							normal: {
+								color: '#006699'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuUser
+					},
+					{
+						name: 'Sys%',
+						stack: '总量',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#66CC99'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuSys
+					},
+					{
+						name: 'Wait%',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#CC3333'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: cpuWait
+					}
+				]
+			};
+
+//////////////////////// MEM
+			var MEM = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-实际内存占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['memfree']
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				xAxis: [{
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				}],
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'memfree',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#0099CC'
+							}
+						},
+						data: memfree
+					}]
+			};
+			
+//////////////////////// NET		
+			var NET = {
+				backgroundColor:"#F2F8FF",
+				title: {
+					x: 'center',
+					text: script+'-网络带宽占用情况'
+				},
+				tooltip: {
+			        trigger: 'axis',
+			        axisPointer: {
+			            animation: false
+			        }
+			    },
+				legend: {
+					top:'25',x: 'center',
+					data: ['Total-Read', 'Total-Write']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: { pixelRatio: 2}//放大两倍
+					}
+				},
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'Total-Read',
+						type: 'line',
+						areaStyle: {normal: {}},
+						data: NetRead
+					},
+					{
+						name: 'Total-Write',
+						type: 'line',
+						areaStyle: {normal: {}},
+						data: NetWrite
+					}
+				]
+			};
+			
+//////////////////////// DISK		
+			var DISK = {
+				backgroundColor: "#F2F8FF",
+				title: {
+					left: 'center',
+					text: script + '-磁盘IO及读写速率'
+				},
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: {
+						animation: false
+					}
+				},
+				legend: {
+					top: '25',
+					left: 'center',
+					data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
+				},
+				grid: {
+					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					containLabel: true
+				},
+				toolbox: {
+					right: '6%',
+					feature: {
+						saveAsImage: {
+							pixelRatio: 2
+						} //放大两倍
+					}
+				},				
+				xAxis: {
+					type: 'category',
+					boundaryGap: false,
+					data: xAxisdata
+				},
+				yAxis: { type: 'value' },
+				series: [{
+						name: 'DiskRead KB/s',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#FF9966'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: DiskRead
+					},
+					{
+						name: 'DiskWrite KB/s',
+						type: 'line',
+						itemStyle: {
+							normal: {
+								color: '#6699CC'
+							}
+						},
+						areaStyle: {normal: {}},
+						data: DiskWrite
+					}
+				]
+			};
+
+
+			cpuChart.setOption(CPU);
+			memChart.setOption(MEM);
+			netChart.setOption(NET);
+			diskChart.setOption(DISK);
+		</script>
+	</body>
+
+</html>
