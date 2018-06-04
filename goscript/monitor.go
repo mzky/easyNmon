@@ -32,7 +32,7 @@ func main() {
 	r.GET("/start", func(c *gin.Context) {//格式 ?n=name&t=time 其中&后可为空 默认30分钟
 		name := c.DefaultQuery("n", "name")  //取name值
 		time := c.DefaultQuery("t", "30") //取执行时间,单位分钟
-		lsCmd := exec.Command("/bin/sh", "-c", "./nmonCTL.sh "+name+" "+time)
+		lsCmd := exec.Command("/bin/bash", "-c", "./nmonCTL.sh "+name+" "+time)
 		
 		go func(){
 			err := lsCmd.Run()  
@@ -54,7 +54,7 @@ func main() {
     		}()
 	})
 	r.GET("/stop", func(c *gin.Context) {
-		lsCmd := exec.Command("/bin/sh", "-c", "ps -ef|grep nmon|grep -v grep|awk {'print $2'}|xargs kill -9")
+		lsCmd := exec.Command("/bin/bash", "-c", "ps -ef|grep nmon|grep -v grep|awk {'print $2'}|xargs kill -9")
 		err := lsCmd.Start()  
 		if err!=nil{
 		       	fmt.Println(err)
