@@ -7,13 +7,21 @@ import (
 	"os/exec"
 	"time"
 	"fmt"
+	"net"
 )
 func main() {
-	port := flag.String("port","","默认监听端口8080, 设置监听端口示例：\r\n\t./monitor -port 9999\r\n")
-	flag.String("启动监控","","参数n：name 生成报告的文件名\r\n\t参数t：time 监控时长，单位分钟\r\n\tget示例：http://192.168.x.x:8080/start?n=test&t=30\r\n")
-	flag.String("杀掉所有监控任务","","get示例：http://192.168.x.x:8080/stop\r\n")
-	flag.String("查看报告","","get示例：http://192.168.x.x:8080/report\r\n")
-	flag.String("退出程序","","get示例：http://192.168.x.x:8080/close\r\n")
+	ip := ""
+	netaddr, _ := net.InterfaceAddrs()
+        networkIp, _ := netaddr[1].(*net.IPNet)
+        if !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
+        	ip = networkIp.IP.String()
+        }	
+
+	port := flag.String("port","","默认监听端口8080\r\n\t设置端口示例：./monitor -port 9999\r\n")
+	flag.String("启动监控","","参数n的值：name 生成报告的文件名\r\n\t参数t的值：time 监控时长，单位分钟\r\n\tget_url示例：http://"+ip+":8080/start?n=test&t=30\r\n")
+	flag.String("停止所有监控任务","","等同于pkill nmon\r\n\tget_url示例：http://"+ip+":8080/stop\r\n")
+	flag.String("查看报告","","浏览器访问url：http://"+ip+":8080/report\r\n")
+	flag.String("退出程序","","等同于pkill monitor\r\n\tget_url示例：http://"+ip+":8080/close\r\n")
 	flag.Parse()
 
 	gin.SetMode(gin.ReleaseMode)
