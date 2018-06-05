@@ -8,6 +8,10 @@ https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 
 #
 更新日志：
+2018.06.05
+
+1.监控接口返回值添加报告列表的url地址，可自己使用地址在浏览器中查看html报告
+2.使用upx将执行文件压缩，打包添加到wiki，方便大家仅下载工具，不需要clone工程
 
 2018.05.16
 
