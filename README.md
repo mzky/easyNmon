@@ -3,7 +3,8 @@
 使用说明：
 https://www.jianshu.com/p/c7c36ba14d3e
 
-
+执行文件下载地址：（以下执行文件不包含源码）
+https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 
 #
 更新日志：
