@@ -19,10 +19,16 @@ func main() {
 
 	port := flag.String("port","","默认监听端口8080\r\n\t设置端口示例：./monitor -port 9999\r\n")
 	flag.String("启动监控","","参数n的值：name 生成报告的文件名\r\n\t参数t的值：time 监控时长，单位分钟\r\n\tget_url示例：http://"+ip+":8080/start?n=test&t=30\r\n")
-	flag.String("停止所有监控任务","","等同于pkill nmon\r\n\tget_url示例：http://"+ip+":8080/stop\r\n")
+	flag.String("停止所有监控任务","","等同于kill掉nmon进程\r\n\tget_url示例：http://"+ip+":8080/stop\r\n")
 	flag.String("查看报告","","浏览器访问url：http://"+ip+":8080/report\r\n")
-	flag.String("退出程序","","等同于pkill monitor\r\n\tget_url示例：http://"+ip+":8080/close\r\n")
+	flag.String("退出程序","","等同于kill掉monitor进程\r\n\tget_url示例：http://"+ip+":8080/close\r\n")
 	flag.Parse()
+
+	sport := ":"
+	sport += *port
+	if *port==""{
+		sport +="8080"
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -42,6 +48,7 @@ func main() {
 		}()
 		c.JSON(200, gin.H{
 		      	"message": string("已执行"+name+"场景监控，持续时间"+time+"分钟"),
+			"reportList":string("http://"+ip+sport+"/report"),
 		})
 	})
 	r.GET("/close", func(c *gin.Context) {
@@ -63,10 +70,5 @@ func main() {
 		      	"message": "已结束所有监听任务!",
 		})
 	})
-	sport := ":"
-	sport += *port
-	if *port==""{
-		sport +="8080"
-	}
 	r.Run(sport) // listen and serve on 0.0.0.0:8080
 }
