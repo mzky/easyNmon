@@ -42,7 +42,7 @@ https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 #
 后期规划：
 
-与LR批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
+与LR和jmeter批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
 
 
 
