@@ -1,9 +1,12 @@
-为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，非常适合配合Loadrunner性能测试框架使用，可以批量执行场景并生成报告
+为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
+适合配合Loadrunner和jmeter进行性能测试，可以z做到批量执行场景并生成监控报告！
 
 使用说明：
+
 https://www.jianshu.com/p/c7c36ba14d3e
 
 执行文件下载：（以下执行文件不包含源码）
+
 https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 
 #
