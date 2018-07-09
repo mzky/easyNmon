@@ -45,10 +45,12 @@ https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 与LR和jmeter批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
 
 
+jmeter4.0的html报告汉化：
 
+https://github.com/mzky/jmeter4.0-cn-report-template
 
 #
-联系：mzky@163.com
+问题反馈：mzky@163.com
 
 
 
