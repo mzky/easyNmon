@@ -10,7 +10,8 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 执行文件下载：（以下执行文件不包含源码）
 
-https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/easyNmon.zip
+https://pan.baidu.com/s/11jydRdiL3kFjhQc0xpp7bA
+
 
 #
 ## 更新日志：
@@ -21,7 +22,7 @@ https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/easyNmon.zip
 
 2.未到nmon设置的预定时间，结束监控服务和nmon进程时，自动生成index.html图表页面文件
 
-3.将-portc参数改为-p
+3.将-port参数改为-p
 
 4.增加build脚本，构建go代码和进行upx压缩
 
