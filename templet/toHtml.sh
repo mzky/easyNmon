@@ -1,8 +1,4 @@
 #!/bin/bash
-if [ ! -n "$1" ]
-then
-echo 执行错误，手动执行格式：./toHtml.sh filename
-fi
 #将nmon报告筛选出关键信息
 array=(ZZZZ CPU_ALL DISKREAD DISKWRITE MEM NET,)
 for name in ${array[@]}  

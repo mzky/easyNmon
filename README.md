@@ -15,6 +15,14 @@ https://raw.githubusercontent.com/wiki/mzky/nmon_to_htmlReport/nmonToHtml.tar.gz
 #
 ## 更新日志：
 
+2018.08.08
+1.将nmonCTL.sh去掉，功能集成到go代码中
+
+2.未到nmon设置的预定时间，结束监控服务和nmon进程时，自动生成index.html图表页面文件
+
+3.将-portc参数改为-p
+
+
 2018.06.05
 
 1.监控接口返回值添加报告列表的url地址，可自己使用地址在浏览器中查看html报告

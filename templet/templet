@@ -116,7 +116,7 @@
 			    },
 				legend: {
 					top:'25',x: 'center',
-					data: ['Memtotal MB','Memfree MB']
+					data: ['memtotal MB','memfree MB']
 				},
 				toolbox: {
 					right: '6%',
@@ -135,7 +135,7 @@
 				}],
 				yAxis: { type: 'value' },
 				series: [{			
-						name: 'Memfree MB',
+						name: 'memfree MB',
 						type: 'line',
 						itemStyle: {
 							normal: {
@@ -144,7 +144,7 @@
 						},
 						data: memfree
 					}, {
-						name: 'Memtotal MB',
+						name: 'memtotal MB',
 						type: 'line',
 						itemStyle: {
 							normal: {
