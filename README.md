@@ -10,11 +10,8 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 执行文件下载：（以下执行文件不包含源码）
 
-<<<<<<< HEAD
-https://pan.baidu.com/s/11jydRdiL3kFjhQc0xpp7bA
-=======
 https://pan.baidu.com/s/1_A5TnW_tG1bTmX-gCNjOzw
->>>>>>> 9cab4d640baf11f4c06afb5aa15206e7f3ff5207
+
 
 
 #
@@ -81,8 +78,7 @@ go的http框架采用gin：https://gin-gonic.github.io/gin/
 图表插件采用百度的echarts：http://echarts.baidu.com/
 
 新版nmon下载地址：http://nmon.sourceforge.net/
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 9cab4d640baf11f4c06afb5aa15206e7f3ff5207
+
+
