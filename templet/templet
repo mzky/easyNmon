@@ -54,7 +54,7 @@
 				toolbox: {
 					right: '6%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}//放大两倍
+						saveAsImage: { pixelRatio: 2}
 					}
 				},
 				xAxis: {
@@ -121,7 +121,7 @@
 				toolbox: {
 					right: '6%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}//放大两倍
+						saveAsImage: { pixelRatio: 2}
 					}
 				},
 				grid: {
@@ -179,7 +179,7 @@
 				toolbox: {
 					right: '6%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}//放大两倍
+						saveAsImage: { pixelRatio: 2}
 					}
 				},
 				xAxis: {
@@ -230,7 +230,7 @@
 					feature: {
 						saveAsImage: {
 							pixelRatio: 2
-						} //放大两倍
+						} 
 					}
 				},				
 				xAxis: {
