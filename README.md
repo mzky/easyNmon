@@ -1,4 +1,4 @@
-# 正式更名为：easyNmon
+# 正式更名为：EasyNmon
 
 
 为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
