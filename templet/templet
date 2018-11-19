@@ -34,7 +34,7 @@
 			var CPU = {
 				backgroundColor:"#F2F8FF",
 				title: {
-					x: 'center',
+					top:'15',x: 'center',
 					text: script+'-CPU总体占用情况'
 				},
 				tooltip: {
@@ -44,11 +44,11 @@
 			        }
 			    },
 				legend: {
-					top:'25',x: 'center',
+					top:'45',x: 'center',
 					data: ['User%', 'Sys%', 'Wait%']
 				},
 				grid: {
-					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					top:'20%',left: '5%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
@@ -73,7 +73,19 @@
 							}
 						},
 						areaStyle: {normal: {}},
-						data: cpuUser
+						data: cpuUser,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+							data : [{type : 'average', name: 'user平均值'}]
+					       	}					       
 					},
 					{
 						name: 'Sys%',
@@ -105,7 +117,7 @@
 			var MEM = {
 				backgroundColor:"#F2F8FF",
 				title: {
-					x: 'center',
+					top:'15',x: 'center',
 					text: script+'-内存使用情况'
 				},
 				tooltip: {
@@ -115,7 +127,7 @@
 			        }
 			    },
 				legend: {
-					top:'25',x: 'center',
+					top:'45',x: 'center',
 					data: ['memtotal MB','memfree MB']
 				},
 				toolbox: {
@@ -125,7 +137,7 @@
 					}
 				},
 				grid: {
-					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					top:'20%',left: '5%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				xAxis: [{
@@ -151,7 +163,19 @@
 								color: '#CC3333'
 							}
 						},
-						data: memtotal
+						data: memtotal,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: 'user平均值'}]
+						}					       
 					}]
 			};
 			
@@ -159,7 +183,7 @@
 			var NET = {
 				backgroundColor:"#F2F8FF",
 				title: {
-					x: 'center',
+					top:'15',x: 'center',
 					text: script+'-网络带宽占用情况'
 				},
 				tooltip: {
@@ -169,11 +193,11 @@
 			        }
 			    },
 				legend: {
-					top:'25',x: 'center',
+					top:'45',x: 'center',
 					data: ['Total-Read KB/s', 'Total-Write KB/s']
 				},
 				grid: {
-					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					top:'20%',left: '5%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
@@ -192,13 +216,37 @@
 						name: 'Total-Read KB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
-						data: NetRead
+						data: NetRead,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: 'user平均值'}]
+						}					       
 					},
 					{
 						name: 'Total-Write KB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
-						data: NetWrite
+						data: NetWrite,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: 'user平均值'}]
+					    }					       
 					}
 				]
 			};
@@ -207,7 +255,7 @@
 			var DISK = {
 				backgroundColor: "#F2F8FF",
 				title: {
-					left: 'center',
+					top:'15',x: 'center',
 					text: script + '-磁盘IO及读写速率'
 				},
 				tooltip: {
@@ -217,12 +265,11 @@
 					}
 				},
 				legend: {
-					top: '25',
-					left: 'center',
+					top:'45',x: 'center',
 					data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
 				},
 				grid: {
-					top:'15%',left: '3%',right: '3%',bottom: '10%',
+					top:'20%',left: '5%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
@@ -248,7 +295,19 @@
 							}
 						},
 						areaStyle: {normal: {}},
-						data: DiskRead
+						data: DiskRead,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: 'user平均值'}]
+						}					       
 					},
 					{
 						name: 'DiskWrite KB/s',
@@ -259,7 +318,19 @@
 							}
 						},
 						areaStyle: {normal: {}},
-						data: DiskWrite
+						data: DiskWrite,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#1e90ff',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: 'user平均值'}]
+						}					       
 					}
 				]
 			};

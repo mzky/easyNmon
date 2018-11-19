@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=ie8">
+    <title>EasyNmon</title>
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="js/amazeui.min.css" />
+    <link rel="stylesheet" href="js/app.css">
+    <script src="js/jquery.min.js"></script>
+
+</head>
+
+<body data-type="widgets">
+    <script src="js/theme.js"></script>
+    <div class="am-g tpl-g">
+        <!-- 内容区域 -->
+        <div>
+            <div class="row-content">
+                <div class="row">
+                    <div>
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> EasyNmon <small>服务器性能监控工具</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-cf">
+                <div class="row">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-body am-fr">
+                                <form class="am-form tpl-form-line-form">
+                                    <div class="am-form-group">
+                                        <label for="user-name" class="am-u-sm-5 am-form-label">测试项名称 <span class="tpl-form-line-small-title">Name</span></label>
+                                        <div class="am-u-sm-7">
+                                            <input type="text" class="am-form-field tpl-form-no-bg" id="name" placeholder="请输入测试项名称">
+																						<small>不建议使用中文</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-5 am-form-label">测试时长 <span class="tpl-form-line-small-title">Time</span></label>
+                                        <div class="am-u-sm-7">
+                                            <input type="text" class="am-form-field tpl-form-no-bg" id="time" placeholder="请输入测试时长">
+                                            <small>单位为分钟</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-9 am-u-sm-push-5">
+                                            <button type="button" id="start" class="am-btn am-btn-primary tpl-btn-bg-color-success ">提交服务器监控任务</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                            		<div class="am-form-group">
+                            				<div class="am-u-sm-9 am-u-sm-push-5">
+                            						<button type="button" id="stop" class="am-btn am-btn-primary tpl-btn-bg-color-success ">结束服务器监控任务</button>
+                            				</div>
+                            		</div>
+                            </div>
+														<div class="widget-head am-cf">
+																<div class="am-form-group">
+																		<div class="am-u-sm-9 am-u-sm-push-5">
+																				<button type="button" id="reprot" class="am-btn am-btn-primary tpl-btn-bg-color-success ">查看服务器监控报告</button>
+																		</div>
+																</div>
+														</div>
+														<div class="widget-head am-cf">
+																<div class="am-form-group">
+																		<div class="am-u-sm-9 am-u-sm-push-5">
+																				<button type="button" id="close" class="am-btn am-btn-primary tpl-btn-bg-color-success "> 结束 EasyNmon服务 </button>
+																		</div>
+																</div>
+														</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+		<div class="am-modal am-modal-prompt" tabindex="-1" id="messagebox">
+		  <div class="am-modal-dialog">
+		    <div id="message" class="am-modal-bd">
+		      返回消息！
+		    </div>
+				<div class="am-modal-footer">
+		      <span class="am-modal-btn">确定</span>
+		    </div>
+		  </div>
+		</div>
+    <script src="js/amazeui.min.js"></script>
+    <script src="js/app.js"></script>
+		<script>
+			$(document).ready(function() {
+				var hostname = window.location.host;
+				var ajaxGet = function(para) {
+					$.ajax({
+						url: "http://" + hostname + "/" + para,
+						type: "GET",
+						dataType: "json",
+						success: function(response) {
+							$('#message').html(response.message);
+							$('#messagebox').modal({
+								relatedTarget: this
+							});
+						},
+						error: function(XmlHttpRequest, textStatus, errorThrown) {
+							//调用失败
+							$('#message').html("执行异常，请检查easyNmon服务是否启动正常！");
+							$('#messagebox').modal({
+								relatedTarget: this
+							});
+						}
+					});  
+				}
+				
+				$('#start').on('click', function() {
+					ajaxGet("start?n="+$('#name').val()+"&t="+$('#time').val());
+				});
+				$('#stop').on('click', function() {
+					ajaxGet("stop");
+				});
+				$('#reprot').on('click', function() {
+						window.location.href="http://" + hostname + "/report";
+				});
+				$('#close').on('click', function() {
+					ajaxGet("close");
+				});
+			});			
+		</script>
+
+</body>
+
+</html>
