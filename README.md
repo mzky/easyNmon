@@ -10,7 +10,6 @@ https://www.jianshu.com/p/c7c36ba14d3e
 
 执行文件下载：（以下执行文件不包含源码）
 
-https://pan.baidu.com/s/1_A5TnW_tG1bTmX-gCNjOzw
 
 
 
