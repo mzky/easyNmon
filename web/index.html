@@ -89,7 +89,6 @@
             </div>
         </div>
     </div>
-    </div>
 		<div class="am-modal am-modal-prompt" tabindex="-1" id="messagebox">
 		  <div class="am-modal-dialog">
 		    <div id="message" class="am-modal-bd">
@@ -127,6 +126,13 @@
 				}
 				
 				$('#start').on('click', function() {
+					if($('#name').val()=="" || $('#time').val()==""){
+						$('#message').html("参数不能为空！");
+						$('#messagebox').modal({
+							relatedTarget: this
+						});
+						return
+					}
 					ajaxGet("start?n="+$('#name').val()+"&t="+$('#time').val());
 				});
 				$('#stop').on('click', function() {
