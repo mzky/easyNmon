@@ -84,6 +84,6 @@ go的http框架采用gin：https://gin-gonic.github.io/gin/
 
 新版nmon下载地址：http://nmon.sourceforge.net/
 
-
+#注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SESE11.4测试正常）
 
 
