@@ -20,7 +20,7 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	port := flag.String("p", "", "默认监听端口9999,自定义端口加 -p 端口号\r\n\t设置端口示例：./monitor -p 9999\r\n")
+	port := flag.String("p", "9999", "默认监听端口9999,自定义端口加 -p 端口号\r\n\t设置端口示例：./monitor -p 9999\r\n")
 	flag.String("web管理页面", "", "浏览器访问http://"+ip+":9999\r\n")
 	flag.String("启动监控", "", "参数n的值：name 生成报告的文件名\r\n\t参数t的值：time 监控时长，单位分钟\r\n\tget_url示例：http://"+ip+":9999/start?n=test&t=30\r\n")
 	flag.String("停止所有监控任务", "", "等同于kill掉nmon进程\r\n\tget_url示例：http://"+ip+":9999/stop\r\n")
@@ -28,18 +28,11 @@ func main() {
 	flag.String("退出程序", "", "关闭自身，结束monitor进程\r\n\tget_url示例：http://"+ip+":9999/close\r\n")
 	flag.Parse()
 
-	sport := ":"
-	if *port == "" {
-		sport += "9999"
-	} else {
-		sport += *port
-	}
-
-	fmt.Println("-访问web管理页面 : http://" + ip + sport)
-	fmt.Println("-启动监控接口示例: http://" + ip + sport + "/start?n=testname&t=30")
-	fmt.Println("-停止所有监控接口: http://" + ip + sport + "/stop")
-	fmt.Println("-浏览器查看报告 :  http://" + ip + sport + "/report")
-	fmt.Println("-结束monitor进程:  http://" + ip + sport + "/close")
+	fmt.Println("-访问web管理页面 : http://" + ip + ":" + *port)
+	fmt.Println("-启动监控接口示例: http://" + ip + ":" + *port + "/start?n=testname&t=30")
+	fmt.Println("-停止所有监控接口: http://" + ip + ":" + *port + "/stop")
+	fmt.Println("-浏览器查看报告 :  http://" + ip + ":" + *port + "/report")
+	fmt.Println("-结束monitor进程:  http://" + ip + ":" + *port + "/close")
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -60,7 +53,7 @@ func main() {
 	r.GET("/close", close)
 	r.GET("/stop", stop)
 
-	r.Run(sport) // listen and serve on 0.0.0.0:8080
+	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
 }
 
 func start(c *gin.Context) { //格式 ?n=name&t=time 其中&后可为空 默认30分钟
