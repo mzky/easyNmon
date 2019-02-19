@@ -8,7 +8,7 @@ done
 #net总列数
 n=`cat NET,|awk -F',' 'NR==1{print NF}'`
 #net中间的列数
-c=`cat NET,|awk -F',' 'NR==1{print NF/2+NF/2%2}'`
+c=$(((n+1)/2+1))
 #net取read列
 cat NET,|awk -F',' 'BEGIN{n='$n'}{for(i=2;i<n/2;i++)printf $i",";print $i}' >read
 #net取write列
