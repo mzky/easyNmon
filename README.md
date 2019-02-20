@@ -79,8 +79,6 @@ jmeter4.0的html报告汉化：
 
 https://github.com/mzky/jmeter4.0-cn-report-template
 
-#
-问题反馈：mzky@163.com
 
 
 
