@@ -1,6 +1,6 @@
 # EasyNmon
 
-为方便沟通，建了一个QQ群：点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
+### 为方便沟通，建了一个QQ群：点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
 为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
 适合配合Loadrunner和jmeter进行性能测试，可以做到批量执行场景并生成监控报告！
