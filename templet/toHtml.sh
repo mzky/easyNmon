@@ -16,21 +16,7 @@ cat NET,|awk -F',' 'BEGIN{c='$c';n='$n'}{for(i=c;i<n;i++)printf "-"$i",";print $
 #汇总总数
 cat read |awk -F',' '{n=0;for(i=1;i<=NF;i++) n+=$i;print n }' >NETREAD
 cat write|awk -F',' '{n=0;for(i=1;i<=NF;i++) n+=$i;print n }' >NETWRITE
-#替换计数器标签为时间
-#array1=(CPU_ALL DISK_SUMM MEM NET)
-#function sedTime(){
-#	for name in ${array1[@]}
-#	do
-#		sed -i "s/$1/$2/g" $name
-#	done
-#}
-#while read LINE
-#do
-#	one=`echo $LINE |awk -F',' '{print $1}'`
-#	two=`echo $LINE |awk -F',' '{print $2}'`
-#	sedTime $one $two
-#done < ZZZZ
-cp -rf templet index.html
+cp -f templet index.html
 #替换脚本名称
 sed -i "s/scripts/$1/g" index.html
 xAxisdatas=""
@@ -107,9 +93,9 @@ while read LINE
 do
 	if [[ "$NetWrites" == "" ]]
 	then	
-		NetWrites=`echo $LINE |awk -F',' '{print $1}'`
+		NetWrites=`echo $LINE |awk -F',' '{print "-"$1}'`
 	else
-		NetWrites=$NetWrites","`echo $LINE |awk -F',' '{print $1}'`
+		NetWrites=$NetWrites","`echo $LINE |awk -F',' '{print "-"$1}'`
 	fi
 done < NETWRITE
 NetWrites=(`echo $NetWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
@@ -139,6 +125,6 @@ DiskWrites=(`echo $DiskWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?
 sed -i "s/DiskWrites/$DiskWrites/g" index.html
 for name in ${array[@]}  
 do 
-	rm -rf $name
+	rm -f $name
 done  
-rm -rf NETREAD NETWRITE read write
+rm -f NETREAD NETWRITE read write
