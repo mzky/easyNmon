@@ -1,8 +1,7 @@
 # EasyNmon
 
-
 为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
-适合配合Loadrunner和jmeter进行性能测试，可以z做到批量执行场景并生成监控报告！
+适合配合Loadrunner和jmeter进行性能测试，可以做到批量执行场景并生成监控报告！
 
 ## 使用说明：
 
@@ -11,6 +10,11 @@ https://www.jianshu.com/p/c7c36ba14d3e
 执行文件下载：（以下执行文件不包含源码）
 
 https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
+
+
+### 为方便沟通，建了一个QQ群：
+点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
+
 
 
 #
@@ -75,12 +79,11 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 与LR和jmeter批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
 
 
-jmeter4.0的html报告汉化：
+jmeter4.0/5.0的html报告汉化模版：
 
 https://github.com/mzky/jmeter4.0-cn-report-template
 
-#
-问题反馈：mzky@163.com
+https://github.com/mzky/jmeter5.0-cn-report-template
 
 
 
@@ -93,6 +96,6 @@ go的http框架采用gin：https://gin-gonic.github.io/gin/
 
 新版nmon下载地址：http://nmon.sourceforge.net/
 
-#注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SESE11.4测试正常）
+#注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SUSE11.4测试正常）
 
 
