@@ -78,6 +78,15 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 2.使用日期+场景名方式保存报告，避免场景重复
 
+#
+## 近期规划：
+
+1.增加系统识别，计划支持ubuntu、suse、centos
+
+2.去掉shell脚本，全部使用go编写
+
+3.通过模版导出word报告（可能会通过多选生成汇总报告）
+
 
 #
 ## 后期规划：
