@@ -105,7 +105,7 @@ https://github.com/mzky/jmeter5.0-cn-report-template
 #
 ## 引用：
 
-go的http框架采用gin：https://gin-gonic.github.io/gin/
+go的http框架采用gin：https://github.com/gin-gonic/gin
 
 图表插件采用百度的echarts：http://echarts.baidu.com/
 
