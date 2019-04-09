@@ -25,6 +25,7 @@ cpuSyss=""
 cpuWaits=""
 memtotals=""
 memfrees=""
+actives=""
 NetReads=""
 NetWrites=""
 DiskReads=""
@@ -68,15 +69,19 @@ do
 	then	
 		memtotals=`echo $LINE |awk -F',' '{print $2}'`
 		memfrees=`echo $LINE |awk -F',' '{print $6}'`
+		actives=`echo $LINE |awk -F',' '{print $12}'`
 	else
 		memtotals=$memtotals","`echo $LINE |awk -F',' '{print $2}'`
 		memfrees=$memfrees","`echo $LINE |awk -F',' '{print $6}'`
+		actives=$actives","`echo $LINE |awk -F',' '{print $12}'`
 	fi
 done < MEM
 memtotals=(`echo $memtotals|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
 memfrees=(`echo $memfrees|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
+actives=(`echo $actives|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
 sed -i "s/memtotals/$memtotals/g" index.html
 sed -i "s/memfrees/$memfrees/g" index.html
+sed -i "s/actives/$actives/g" index.html
 #取net指标
 while read LINE
 do
@@ -92,10 +97,10 @@ sed -i "s/NetReads/$NetReads/g" index.html
 while read LINE
 do
 	if [[ "$NetWrites" == "" ]]
-	then	
-		NetWrites=`echo $LINE |awk -F',' '{print "-"$1}'`
-	else
-		NetWrites=$NetWrites","`echo $LINE |awk -F',' '{print "-"$1}'`
+	then
+		NetWrites=`echo ${LINE#-} |awk -F',' '{print "-"$1}'`
+	else	
+		NetWrites=$NetWrites","`echo ${LINE#-} |awk -F',' '{print "-"$1}'`
 	fi
 done < NETWRITE
 NetWrites=(`echo $NetWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
@@ -116,9 +121,9 @@ while read LINE
 do
 	if [[ "$DiskWrites" == "" ]]
 	then	
-		DiskWrites=`echo $LINE |awk -F',' '{print "-"$2}'`
+		DiskWrites=`echo ${LINE#-} |awk -F',' '{print "-"$2}'`
 	else
-		DiskWrites=$DiskWrites","`echo $LINE |awk -F',' '{print "-"$2}'`
+		DiskWrites=$DiskWrites","`echo ${LINE#-} |awk -F',' '{print "-"$2}'`
 	fi
 done < DISKWRITE
 DiskWrites=(`echo $DiskWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)

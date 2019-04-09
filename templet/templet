@@ -25,6 +25,7 @@
 			var cpuSys=[cpuSyss];
 			var cpuWait=[cpuWaits];
 			var memfree=[memfrees];
+			var active=[actives];
 			var memtotal=[memtotals];
 			var NetRead=[NetReads];
 			var NetWrite=[NetWrites];
@@ -128,7 +129,7 @@
 			    },
 				legend: {
 					top:'45',x: 'center',
-					data: ['memtotal MB','memfree MB']
+					data: ['memtotal MB','memfree MB','active MB']
 				},
 				toolbox: {
 					right: '6%',
@@ -176,7 +177,30 @@
 						},
 						data : [{type : 'average', name: 'user平均值'}]
 						}					       
-					}]
+					}
+						, {
+							name: 'active MB',
+								      type: 'line',
+								      itemStyle: {
+						normal: {
+						color: '#88FF33'
+					}
+					      },
+					        data: active,
+					        markLine : {
+				                symbol : 'none',
+					        itemStyle : {
+						normal : {
+		 				color:'#0090ff',
+		       				label : {
+			       			show:true
+		       				}
+					 }
+				       },
+					data : [{type : 'average', name: 'user平均值'}]
+					 }                                              
+					}
+					]
 			};
 			
 //////////////////////// NET		

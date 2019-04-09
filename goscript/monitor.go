@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+var (
+	Version   = "0.1"
+	BuildTime = "20180808"
+)
+
 func main() {
 	ip := ""
 	netaddr, _ := net.InterfaceAddrs()
@@ -20,19 +25,26 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	port := flag.String("p", "9999", "默认监听端口9999,自定义端口加 -p 端口号\r\n\t设置端口示例：./monitor -p 9999\r\n")
-	flag.String("web管理页面", "", "浏览器访问http://"+ip+":9999\r\n")
-	flag.String("启动监控", "", "参数n的值：name 生成报告的文件名\r\n\t参数t的值：time 监控时长，单位分钟\r\n\tget_url示例：http://"+ip+":9999/start?n=test&t=30\r\n")
-	flag.String("停止所有监控任务", "", "等同于kill掉nmon进程\r\n\tget_url示例：http://"+ip+":9999/stop\r\n")
-	flag.String("查看报告", "", "浏览器访问url：http://"+ip+":9999/report，也可通过web管理页面入口查看\r\n")
-	flag.String("退出程序", "", "关闭自身，结束monitor进程\r\n\tget_url示例：http://"+ip+":9999/close\r\n")
+	version := flag.Bool("v", false, "显示版本号")
+	port := flag.String("p", "9999", "默认监听端口9999,自定义端口加 -p 端口号\n设置端口示例：./monitor -p 9999")
+	flag.Bool("web管理页面", false, "浏览器访问http://"+ip+":9999")
+	flag.Bool("启动监控", false, "参数n的值：name 生成报告的文件名\n参数t的值：time 监控时长，单位分钟\n\tget_url示例：http://"+ip+":9999/start?n=test&t=30")
+	flag.Bool("停止所有监控任务", false, "等同于kill掉nmon进程\nget_url示例：http://"+ip+":9999/stop")
+	flag.Bool("查看报告", false, "浏览器访问：http://"+ip+":9999/report，也可通过web管理页面入口查看")
+	flag.Bool("退出程序", false, "关闭自身，结束monitor进程\nget_url示例：http://"+ip+":9999/close")
 	flag.Parse()
 
-	fmt.Println("-访问web管理页面 : http://" + ip + ":" + *port)
-	fmt.Println("-启动监控接口示例: http://" + ip + ":" + *port + "/start?n=testname&t=30")
-	fmt.Println("-停止所有监控接口: http://" + ip + ":" + *port + "/stop")
-	fmt.Println("-浏览器查看报告 :  http://" + ip + ":" + *port + "/report")
-	fmt.Println("-结束monitor进程:  http://" + ip + ":" + *port + "/close")
+	if *version {
+		fmt.Println("Version: " + Version)
+		fmt.Println("BuildTime: " + BuildTime)
+		return
+	}
+
+	fmt.Println("访问web管理页面 : http://" + ip + ":" + *port)
+	fmt.Println("启动监控接口示例: http://" + ip + ":" + *port + "/start?n=testname&t=30")
+	fmt.Println("停止所有监控接口: http://" + ip + ":" + *port + "/stop")
+	fmt.Println("浏览器查看报告 :  http://" + ip + ":" + *port + "/report")
+	fmt.Println("结束monitor进程:  http://" + ip + ":" + *port + "/close")
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -45,6 +57,7 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
+	os.MkdirAll("./report", 777)
 	//浏览报告
 	r.StaticFS("/report", http.Dir("report"))
 	//r.StaticFS("/", http.Dir("web"))
@@ -81,7 +94,7 @@ func close(c *gin.Context) {
 		"message": "已结束EasyNmon服务!",
 	})
 	go func() {
-		exec.Command("/bin/bash", "-c", "cd report/&&for i in `ls`;do cd $PWD/$i;if [ \"`ls index.html`\" != \"index.html\" ];then ./toHtml.sh *.csv; fi;cd ..;done").Run()
+		exec.Command("/bin/bash", "-c", "cd report/&&for i in `ls`;do cd $PWD/$i;if [ \"`ls index.html`\" != \"index.html\" ];then ./toHtml.sh \"`ls|grep -v js|grep -v templet|grep -v toHtml.sh`\"; fi;cd ..;done").Run()
 		time.Sleep(time.Second * 2)
 		os.Exit(0)
 	}()
