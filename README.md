@@ -20,6 +20,11 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 #
 ## 更新日志：
+### 2019.04.9
+1.增加version，方便对比版本
+
+2.增加内存的actives项
+
 ### 2019.03.21
 1.修复用户提交的shell脚本缺陷
 
