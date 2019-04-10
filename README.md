@@ -46,7 +46,7 @@ https://github.com/mzky/jmeter5.0-cn-report-template
 
 ## 引用与感谢：
 
-go的http框架采用gin：https://github.com/gin-gonic/gin
+go的web框架采用gin：https://github.com/gin-gonic/gin
 
 图表插件采用百度的echarts：http://echarts.baidu.com/
 
