@@ -44,7 +44,7 @@ https://github.com/mzky/jmeter5.0-cn-report-template
 
 
 
-## 引用与感谢：
+## 感谢：
 
 go的web框架采用gin：https://github.com/gin-gonic/gin
 
