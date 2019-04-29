@@ -22,7 +22,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 ## 更新日志：
 
-https://github.com/mzky/easyNmon/wiki/更新日志
+https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 
 ## 近期规划：
