@@ -62,4 +62,4 @@ go的web框架采用gin：https://github.com/gin-gonic/gin
 
 ## 推荐：
 
-go解析生成html：https://github.com/ElectricBubble/lazy-nmon
+go解析nmon报告生成html：https://github.com/ElectricBubble/lazy-nmon
