@@ -48,6 +48,8 @@ https://github.com/mzky/jmeter5.0-cn-report-template
 
 ## 感谢：
 
+### 基于nmon的v1.00版本：https://github.com/mzky/easyNmon/releases/tag/v1.00
+
 go的web框架采用gin：https://github.com/gin-gonic/gin
 
 图表插件采用百度的echarts：http://echarts.baidu.com/
