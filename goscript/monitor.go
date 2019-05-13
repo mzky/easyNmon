@@ -13,7 +13,9 @@ import (
 )
 
 var (
+	//版本号
 	Version   = "0.1"
+	//构建时间
 	BuildTime = "20180808"
 )
 
