@@ -2,6 +2,8 @@
 
 https://github.com/mzky/mesro
 
+#
+EasyN后期将不再提供新功能，仅fixbug和维护
 
 # EasyNmon
 
