@@ -1,9 +1,9 @@
-### 因改动过大，并且不再使用Nmon作为采集工具，另开一个项目
+### 因代码改动过大，并且不再使用Nmon作为采集工具，另开一个项目
 
 https://github.com/mzky/mesro
 
 #
-EasyN后期将不再提供新功能，仅fixbug和维护
+EasyNmon后期将不再提供新功能，仅fixbug和维护
 
 # EasyNmon
 
