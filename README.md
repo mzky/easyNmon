@@ -1,3 +1,8 @@
+### 因改动过大，并且不再使用Nmon作为采集工具，另开一个项目
+
+https://github.com/mzky/mesro
+
+
 # EasyNmon
 
 为了方便多场景批量性能测试，用golang写了个监控程序，可以通过get url方式启动和停止nmon服务，
@@ -25,7 +30,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 
-## 近期规划：
+## 近期规划：（将在mesro项目中实现）
 
 1.增加系统识别，计划支持ubuntu、suse、centos
 
@@ -34,7 +39,7 @@ https://github.com/mzky/easyNmon/wiki/ChangeLog
 3.通过模版导出word报告（可能会通过多选生成汇总报告）
 
 
-## 长期规划：
+## 长期规划：（将在mesro项目中实现）
 
 与LR和jmeter批量测试自动化框架结合 达到自动执行性能，自动监控服务器，自动生成html报告（包括TPS、RT和服务器性能报告）
 
