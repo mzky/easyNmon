@@ -1,9 +1,10 @@
-### 因代码改动过大，并且不再使用Nmon作为采集工具，另开一个项目
+## 因代码改动过大，并且不再使用Nmon作为采集工具，另开一个项目
+新项目将支持mysql、pgsql、tomcat、redis、Nginx等监控
 
 https://github.com/mzky/mesro
 
 #
-## EasyNmon后期将不再提供新功能，仅优化现有功能和fixbug
+### EasyNmon后期将不再提供新功能，仅优化现有功能和fixbug
 
 # EasyNmon
 
