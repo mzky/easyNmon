@@ -1,4 +1,4 @@
-## 因代码改动过大，并且不再使用Nmon作为采集工具，另开一个项目
+## 因新版改动过大，并且不再使用Nmon作为采集工具，另开一个项目
 新项目将支持mysql、pgsql、tomcat、redis、Nginx等监控
 
 https://github.com/mzky/mesro
