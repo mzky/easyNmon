@@ -3,7 +3,7 @@
 https://github.com/mzky/mesro
 
 #
-EasyNmon后期将不再提供新功能，仅fixbug和维护
+## EasyNmon后期将不再提供新功能，仅优化现有功能和fixbug
 
 # EasyNmon
 
