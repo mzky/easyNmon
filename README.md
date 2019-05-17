@@ -52,8 +52,6 @@ https://github.com/mzky/jmeter4.0-cn-report-template
 https://github.com/mzky/jmeter5.0-cn-report-template
 
 
-## 基于nmon的v1.00版本：https://github.com/mzky/easyNmon/releases/tag/v1.00
-
 ### 感谢：
 
 go的web框架gin：https://github.com/gin-gonic/gin
