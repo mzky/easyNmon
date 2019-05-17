@@ -9,17 +9,19 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
 var (
 	//版本号
-	Version   = "0.1"
+	Version = "<Version>"
 	//构建时间
-	BuildTime = "20180808"
+	BuildTime = "<BuildTime>"
 )
 
 func main() {
+	os.MkdirAll("./report", 777)
 	ip := ""
 	netaddr, _ := net.InterfaceAddrs()
 	networkIp, _ := netaddr[1].(*net.IPNet)
@@ -58,11 +60,17 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
-
-	os.MkdirAll("./report", 777)
 	//浏览报告
-	r.StaticFS("/report", http.Dir("report"))
-	//r.StaticFS("/", http.Dir("web"))
+	r.GET("/report/*name", func(c *gin.Context) {
+		name := c.Param("name")
+		if len(name) > 15 && strings.Count(name, "/") < 3 {
+			runame := name[:len(name)-15]
+			exec.Command("/bin/bash", "-c", "cd report"+name+"&&./toHtml.sh "+runame[1:]).Run()
+		}
+		c.Request.URL.Path = "/reports" + name
+		defer r.HandleContext(c)
+	})
+	r.StaticFS("/reports/", http.Dir("report"))
 
 	r.GET("/start", start)
 	r.GET("/close", close)
@@ -98,7 +106,7 @@ func close(c *gin.Context) {
 	go func() {
 		exec.Command("/bin/bash", "-c", "cd report/&&for i in `ls`;do cd $PWD/$i;if [ \"`ls index.html`\" != \"index.html\" ];then ./toHtml.sh \"`ls|grep -v js|grep -v templet|grep -v toHtml.sh`\"; fi;cd ..;done").Run()
 		time.Sleep(time.Second * 2)
-		os.Exit(0)
+		defer os.Exit(0)
 	}()
 }
 
