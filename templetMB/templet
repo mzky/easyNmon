@@ -218,7 +218,7 @@
 			    },
 				legend: {
 					top:'45',x: 'center',
-					data: ['Total-Read KB/s', 'Total-Write KB/s']
+					data: ['Total-Read MB/s', 'Total-Write MB/s']
 				},
 				grid: {
 					top:'20%',left: '5%',right: '10%',bottom: '10%',
@@ -237,7 +237,7 @@
 				},
 				yAxis: { type: 'value' },
 				series: [{
-						name: 'Total-Read KB/s',
+						name: 'Total-Read MB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetRead,
@@ -255,7 +255,7 @@
 						}					       
 					},
 					{
-						name: 'Total-Write KB/s',
+						name: 'Total-Write MB/s',
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetWrite,
@@ -290,7 +290,7 @@
 				},
 				legend: {
 					top:'45',x: 'center',
-					data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
+					data: ['DiskRead MB/s', 'DiskWrite MB/s', 'IO/sec']
 				},
 				grid: {
 					top:'20%',left: '5%',right: '10%',bottom: '10%',
@@ -311,7 +311,7 @@
 				},
 				yAxis: { type: 'value' },
 				series: [{
-						name: 'DiskRead KB/s',
+						name: 'DiskRead MB/s',
 						type: 'line',
 						itemStyle: {
 							normal: {
@@ -334,7 +334,7 @@
 						}					       
 					},
 					{
-						name: 'DiskWrite KB/s',
+						name: 'DiskWrite MB/s',
 						type: 'line',
 						itemStyle: {
 							normal: {
