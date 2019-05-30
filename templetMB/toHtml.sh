@@ -87,9 +87,9 @@ while read LINE
 do
 	if [[ "$NetReads" == "" ]]
 	then	
-		NetReads=`echo $LINE |awk -F',' '{print $1}'`
+		NetReads=`echo $LINE |awk -F',' '{printf "%.2f", $1/1024}'`
 	else
-		NetReads=$NetReads","`echo $LINE |awk -F',' '{print $1}'`
+		NetReads=$NetReads","`echo $LINE |awk -F',' '{printf "%.2f", $1/1024}'`
 	fi
 done < NETREAD
 NetReads=(`echo $NetReads|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
@@ -98,9 +98,9 @@ while read LINE
 do
 	if [[ "$NetWrites" == "" ]]
 	then
-		NetWrites=`echo ${LINE#-} |awk -F',' '{print "-"$1}'`
+		NetWrites=`echo ${LINE#-} |awk -F',' '{printf "-%.2f", $1/1024}'`
 	else	
-		NetWrites=$NetWrites","`echo ${LINE#-} |awk -F',' '{print "-"$1}'`
+		NetWrites=$NetWrites","`echo ${LINE#-} |awk -F',' '{printf "-%.2f", $1/1024}'`
 	fi
 done < NETWRITE
 NetWrites=(`echo $NetWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
@@ -110,9 +110,9 @@ while read LINE
 do
 	if [[ "$DiskReads" == "" ]]
 	then	
-		DiskReads=`echo $LINE |awk -F',' '{print $2}'`
+		DiskReads=`echo $LINE |awk -F',' '{printf "%.2f", $2/1024}'`
 	else
-		DiskReads=$DiskReads","`echo $LINE |awk -F',' '{print $2}'`
+		DiskReads=$DiskReads","`echo $LINE |awk -F',' '{printf "%.2f", $2/1024}'`
 	fi
 done < DISKREAD
 DiskReads=(`echo $DiskReads|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
@@ -121,9 +121,9 @@ while read LINE
 do
 	if [[ "$DiskWrites" == "" ]]
 	then	
-		DiskWrites=`echo ${LINE#-} |awk -F',' '{print "-"$2}'`
+		DiskWrites=`echo ${LINE#-} |awk -F',' '{printf "-%.2f",$2/1024}'`
 	else
-		DiskWrites=$DiskWrites","`echo ${LINE#-} |awk -F',' '{print "-"$2}'`
+		DiskWrites=$DiskWrites","`echo ${LINE#-} |awk -F',' '{printf "-%.2f",$2/1024}'`
 	fi
 done < DISKWRITE
 DiskWrites=(`echo $DiskWrites|awk -F',' '{OFS=","}{NF=NF;$1="?";print}'|sed 's/?,//g'`)
