@@ -1,6 +1,7 @@
 package main
 
 import (
+	"easyNmon/internal"
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -8,15 +9,16 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var (
-	//版本号
+	// 版本号
 	Version = "<Version>"
-	//构建时间
+	// 构建时间
 	BuildTime = "<BuildTime>"
 )
 
@@ -36,6 +38,13 @@ func main() {
 	flag.Bool("停止所有监控任务", false, "等同于kill掉nmon进程\nget_url示例：http://"+ip+":9999/stop")
 	flag.Bool("查看报告", false, "浏览器访问：http://"+ip+":9999/report，也可通过web管理页面入口查看")
 	flag.Bool("退出程序", false, "关闭自身，结束monitor进程\nget_url示例：http://"+ip+":9999/close")
+
+	wd := flag.String("wd", *internal.WorkingDirectory, "指定当前工作路径")
+	flag.Parse()
+	if *wd != "" {
+		internal.WorkingDirectory = wd
+	}
+
 	flag.Parse()
 
 	if *version {
@@ -53,19 +62,25 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	//首页
+	// 首页
 	r.LoadHTMLGlob("web/index.html")
 	r.Static("/js", "web/js")
 	r.Static("/fonts", "web/fonts")
+	r.Static("/chart", "web/chart")
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
-	//浏览报告
+	// 浏览报告
 	r.GET("/report/*name", func(c *gin.Context) {
 		name := c.Param("name")
 		if len(name) > 15 && strings.Count(name, "/") < 3 {
 			runame := name[:len(name)-15]
-			exec.Command("/bin/bash", "-c", "cd report"+name+"&&./toHtml.sh "+runame[1:]).Run()
+			// exec.Command("/bin/bash", "-c", "cd report"+name+"&&./toHtml.sh "+runame[1:]).Run()
+			nmonReport := internal.GetNmonReport(filepath.Join(*internal.WorkingDirectory, "report", name, runame[1:]))
+			if nmonReport != nil {
+				nmonReport.ScriptName = runame[1:]
+				internal.GenIndexPage(nmonReport, filepath.Join(*internal.WorkingDirectory, "report", name))
+			}
 		}
 		c.Request.URL.Path = "/reports" + name
 		defer r.HandleContext(c)
@@ -79,9 +94,9 @@ func main() {
 	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
 }
 
-func start(c *gin.Context) { //格式 ?n=name&t=time 其中&后可为空 默认30分钟
-	name := c.DefaultQuery("n", "name")  //取name值
-	timeStr := c.DefaultQuery("t", "30") //取执行时间,单位分钟
+func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认30分钟
+	name := c.DefaultQuery("n", "name")  // 取name值
+	timeStr := c.DefaultQuery("t", "30") // 取执行时间,单位分钟
 
 	filename := name + time.Now().Format("20060102150405")
 
@@ -90,7 +105,12 @@ func start(c *gin.Context) { //格式 ?n=name&t=time 其中&后可为空 默认3
 		exec.Command("/bin/bash", "-c", "./nmon -f -t -s "+timeStr+" -c 60 -m report/"+filename+" -F "+name).Run()
 		t, _ := strconv.Atoi(timeStr)
 		time.Sleep(time.Second * time.Duration(t*60+2))
-		exec.Command("/bin/bash", "-c", "cd report/"+filename+" &&./toHtml.sh "+name).Run()
+		// exec.Command("/bin/bash", "-c", "cd report/"+filename+" &&./toHtml.sh "+name).Run()
+		nmonReport := internal.GetNmonReport(filepath.Join(*internal.WorkingDirectory, "report", filename, name))
+		if nmonReport != nil {
+			nmonReport.ScriptName = name
+			internal.GenIndexPage(nmonReport, filepath.Join(*internal.WorkingDirectory, "report", filename))
+		}
 	}()
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
