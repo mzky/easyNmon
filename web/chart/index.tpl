@@ -4,7 +4,8 @@
 		<meta charset="utf-8">
 		<title>服务器性能监控报告</title>
 		<!-- 引入 echarts.js -->
-		<script src="/chart/js/echarts.min.js"></script>
+		<script src="../../web/js/echarts.min.js"></script>
+       		<script src="/web/js/jquery.min.js"></script>
 	</head>
 	<body>
 		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
@@ -20,7 +21,7 @@
 			var diskChart = echarts.init(document.getElementById('disk'));
 			//变量定义
 			var script="{{.ScriptName}}";//场景脚本
-			var xAxisdata=[{{ range .XAxisdatas }}"{{- . }}",{{ end -}}];
+			var xAxisdata={{.XAxisdatas}};
 			var cpuUser={{.CPUUsers}};
 			var cpuSys={{.CPUSyss}};
 			var cpuWait={{.CPUWaits}};
@@ -85,7 +86,7 @@
 							}
 						}
 						},
-							data : [{type : 'average', name: 'user平均值'}]
+							data : [{type : 'average', name: '平均值'}]
 					       	}					       
 					},
 					{
@@ -113,7 +114,6 @@
 					}
 				]
 			};
-
 //////////////////////// MEM
 			var MEM = {
 				backgroundColor:"#F2F8FF",
@@ -175,29 +175,28 @@
 							}
 						}
 						},
-						data : [{type : 'average', name: 'user平均值'}]
+						data : [{type : 'average', name: '平均值'}]
 						}					       
-					}
-						, {
-							name: 'active MB',
-								      type: 'line',
-								      itemStyle: {
-						normal: {
-						color: '#88FF33'
-					}
-					      },
+					}, {
+						name: 'active MB',
+					 	type: 'line',
+						itemStyle: {
+							normal: {
+							color: '#CC9933'
+							}
+					      	},
 					        data: active,
 					        markLine : {
 				                symbol : 'none',
 					        itemStyle : {
 						normal : {
-		 				color:'#0090ff',
+		 				color:'#CC9933',
 		       				label : {
 			       			show:true
 		       				}
 					 }
 				       },
-					data : [{type : 'average', name: 'user平均值'}]
+					data : [{type : 'average', name: '平均值'}]
 					 }                                              
 					}
 					]
@@ -251,7 +250,7 @@
 							}
 						}
 						},
-						data : [{type : 'average', name: 'user平均值'}]
+						data : [{type : 'average', name: '平均值'}]
 						}					       
 					},
 					{
@@ -269,7 +268,7 @@
 							}
 						}
 						},
-						data : [{type : 'average', name: 'user平均值'}]
+						data : [{type : 'average', name: '平均值'}]
 					    }					       
 					}
 				]
@@ -330,7 +329,7 @@
 							}
 						}
 						},
-						data : [{type : 'average', name: 'user平均值'}]
+						data : [{type : 'average', name: '平均值'}]
 						}					       
 					},
 					{
@@ -353,18 +352,27 @@
 							}
 						}
 						},
-						data : [{type : 'average', name: 'user平均值'}]
+						data : [{type : 'average', name: '平均值'}]
 						}					       
 					}
 				]
 			};
-
-
 			cpuChart.setOption(CPU);
 			memChart.setOption(MEM);
 			netChart.setOption(NET);
 			diskChart.setOption(DISK);
+
+                        var url = window.location.href;
+   			setInterval(ajaxGet,10000);
+			function ajaxGet() {
+				$.ajax({
+        				url: url.replace('report','generate'),
+                			type: "GET",
+					async:true,
+					success:function(){
+						window.location.reload()
+				}});
+			}
 		</script>
 	</body>
-
 </html>

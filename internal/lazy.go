@@ -27,7 +27,7 @@ type NmonReport struct {
 }
 
 func GenIndexPage(nr *NmonReport, fPath string) {
-	tpl := template.Must(template.New("index.tpl").ParseFiles(filepath.Join(*WorkingDirectory, "web", "chart", "index.tpl")))
+	tpl := template.Must(template.New("index.tpl").ParseFiles(filepath.Join("web", "chart", "index.tpl")))
 	file, err := os.Create(filepath.Join(fPath, "index.html"))
 	if err != nil {
 		log.Println(err)
@@ -38,11 +38,12 @@ func GenIndexPage(nr *NmonReport, fPath string) {
 	}
 }
 
-func GetNmonReport(fileName string) *NmonReport {
+func GetNmonReport(filePath string, name string) {
+	fileName := filepath.Join(filePath, name)
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Println(err)
-		return nil
+		return
 	}
 	defer file.Close()
 	reader := bufio.NewReader(file)
@@ -83,7 +84,7 @@ func GetNmonReport(fileName string) *NmonReport {
 			break
 		} else if err != nil {
 			log.Println(err)
-			return nil
+			return
 		}
 		strLine := string(line)
 		arr := strings.Split(strLine, ",")
@@ -147,7 +148,7 @@ func GetNmonReport(fileName string) *NmonReport {
 			continue
 		}
 		if hasDiskWrite && strings.HasPrefix(strLine, "DISKWRITE,") {
-			sliceDiskWrite = append(sliceDiskWrite, SumOfEachColumns(strLine))
+			sliceDiskWrite = append(sliceDiskWrite, SumOfEachColumns(strLine)*-1)
 			continue
 		}
 		if hasMem && strings.HasPrefix(strLine, "MEM,") {
@@ -188,7 +189,7 @@ func GetNmonReport(fileName string) *NmonReport {
 
 	if !hasZZZZ {
 		log.Println("解析nmon结果文件失败")
-		return nil
+		return
 	} else {
 		nr.XAxisdatas = sliceZZZZTime
 	}
@@ -214,11 +215,15 @@ func GetNmonReport(fileName string) *NmonReport {
 		nr.DiskReads = sliceDiskRead
 		nr.DiskWrites = sliceDiskWrite
 	}
-	return nr
+	if nr != nil {
+		nr.ScriptName = name
+		GenIndexPage(nr, filePath)
+	}
 }
 
 // GetFloatFromString 字符串转float64
 func GetFloatFromString(value string) float64 {
+	decimal.DivisionPrecision = 2
 	n, _ := decimal.NewFromString(value)
 	ret, _ := n.Float64()
 	return ret
@@ -226,12 +231,14 @@ func GetFloatFromString(value string) float64 {
 
 // GetFloatFromDecimal decimal.Decimal转float64
 func GetFloatFromDecimal(value decimal.Decimal) float64 {
+	decimal.DivisionPrecision = 2
 	ret, _ := value.Float64()
 	return ret
 }
 
 // SumOfFloat 计算float的和
 func SumOfFloat(value ...float64) float64 {
+	decimal.DivisionPrecision = 2
 	sum := decimal.NewFromFloat32(0)
 	for _, v := range value {
 		sum = sum.Add(decimal.NewFromFloat(v))
@@ -242,6 +249,7 @@ func SumOfFloat(value ...float64) float64 {
 
 // SumOfEachColumns 返回当前行的列之和(不包含前两列)
 func SumOfEachColumns(line string) float64 {
+	decimal.DivisionPrecision = 2
 	arr := strings.Split(line, ",")
 	sum := decimal.NewFromFloat32(0)
 	for i := 2; i < len(arr); i++ {
@@ -258,6 +266,7 @@ func SumOfEachColumns(line string) float64 {
 
 // SumOfSpecifiedColumns 返回当前行的指定列之和
 func SumOfSpecifiedColumns(line string, columns []int) float64 {
+	decimal.DivisionPrecision = 2
 	arr := strings.Split(line, ",")
 	sum := decimal.NewFromFloat32(0)
 	for _, index := range columns {
