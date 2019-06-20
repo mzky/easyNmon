@@ -55,6 +55,10 @@ https://github.com/mzky/jmeter4.0-cn-report-template
 https://github.com/mzky/jmeter5.0-cn-report-template
 
 
+#注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SUSE11.4测试正常）
+
+## 特别感谢ElectricBubble提交的代码，使EasyNmon实现完全go语言编码
+
 ### 感谢：
 
 go的web框架gin：https://github.com/gin-gonic/gin
@@ -65,9 +69,3 @@ go的web框架gin：https://github.com/gin-gonic/gin
 
 新版nmon下载地址：http://nmon.sourceforge.net/
 
-
-#注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SUSE11.4测试正常）
-
-## 推荐：
-
-go解析nmon报告生成html：https://github.com/ElectricBubble/lazy-nmon
