@@ -13,7 +13,7 @@ https://github.com/mzky/mesro
 如在固定服务器上进行长期监控，建议使用open-falcon、Telegraf+Influxdb+grafana或NetData等优秀的监控工具
 
 
-## 使用说明：
+## 操作说明：
 
 https://www.jianshu.com/p/c7c36ba14d3e
 
