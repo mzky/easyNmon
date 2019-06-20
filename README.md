@@ -30,6 +30,9 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
 
+## 特别感谢ElectricBubble提交的代码，使EasyNmon实现完全go语言编码
+
+
 ## 更新日志：
 
 https://github.com/mzky/easyNmon/wiki/ChangeLog
@@ -57,7 +60,6 @@ https://github.com/mzky/jmeter5.0-cn-report-template
 
 #注意： 默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SUSE11.4测试正常）
 
-## 特别感谢ElectricBubble提交的代码，使EasyNmon实现完全go语言编码
 
 ### 感谢：
 
