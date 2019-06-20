@@ -30,7 +30,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
 
-## 特别感谢ElectricBubble提交的代码，使EasyNmon实现完全go语言编码
+## ☆ 特别感谢ElectricBubble提交的代码，使EasyNmon实现完全go语言编码
 
 
 ## 更新日志：
