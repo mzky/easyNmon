@@ -28,7 +28,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 ## 为方便沟通，建了一个QQ群：
 点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
-### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
+#### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
 
 
 ###
@@ -38,8 +38,7 @@ https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 
 ##
-### 注意： 
-默认nmon为CentOS版本（CentOS6.5~7.4正常），Ubuntu和SUSE需要下载对应版本的nmon替换（SUSE11.4测试正常）
+#### 注意：默认nmon支持CentOS6.5~7.4，Ubuntu和SUSE需要下载对应版本的nmon替换
 
 ## 感谢：
 
