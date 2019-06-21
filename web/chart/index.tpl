@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<title>服务器性能监控报告</title>
 		<!-- 引入 echarts.js -->
-		<script src="../../web/js/echarts.min.js"></script>
-       		<script src="/web/js/jquery.min.js"></script>
+		<script src="echarts.min.js"></script>
+		<script src="/web/js/jquery.min.js"></script>
 	</head>
 	<body>
 		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
@@ -363,7 +363,6 @@
 			diskChart.setOption(DISK);
 
                         var url = window.location.href;
-   			setInterval(ajaxGet,10000);
 			function ajaxGet() {
 				$.ajax({
         				url: url.replace('report','generate'),
@@ -373,6 +372,7 @@
 						window.location.reload()
 				}});
 			}
+   			setInterval(ajaxGet,10000);
 		</script>
 	</body>
 </html>
