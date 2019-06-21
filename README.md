@@ -12,33 +12,33 @@ https://github.com/mzky/mesro
 ### easyNmon的目标很明确：简单、轻量、绿色,在不需要安装任何语言环境和插件的情况下进行Linux系统资源监控
 如在固定服务器上进行长期监控，建议使用open-falcon、Telegraf+Influxdb+grafana或NetData等优秀的监控工具
 
-
+##
 ## 操作说明：
 
 https://www.jianshu.com/p/c7c36ba14d3e
 
-
+##
 ## 执行文件下载：（以下执行文件不包含源码）
 https://github.com/mzky/easyNmon/releases
 
 镜像：
 https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
-#
+##
 ## 为方便沟通，建了一个QQ群：
 点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
-#### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
+### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
 
 
-###
+##
 ## 更新日志：
 
 https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 
 ##
-#### 注意：默认nmon支持CentOS6.5~7.4，Ubuntu和SUSE需要下载对应版本的nmon替换
+### 注意：默认nmon支持CentOS6.5~7.4，Ubuntu和SUSE需要下载对应版本的nmon替换
 
 ## 感谢：
 
