@@ -23,6 +23,7 @@ var (
 	BuildTime = "<BuildTime>"
 	//全局
 	ReportDir string
+	NmonPath  string
 )
 
 func main() {
@@ -36,6 +37,7 @@ func main() {
 	version := flag.Bool("v", false, "显示版本号")
 	port := flag.String("p", "9999", "默认监听端口9999,自定义端口加 -p 端口号\n设置端口示例：./easyNmon -p 9999")
 	dir := flag.String("d", "report", "指定生成报告的directory")
+	nmonpath := flag.String("np", "nmon/nmon", "指定对应系统版本的nmon文件")
 	flag.Bool("web管理页面", false, "浏览器访问http://"+ip+":9999")
 	flag.Bool("启动监控", false, "参数n的值：name 生成报告的文件名\n参数t的值：time 监控时长，单位分钟\nget_url示例：http://"+ip+":9999/start?n=test&t=30")
 	flag.Bool("停止所有监控任务", false, "等同于kill掉nmon进程\nget_url示例：http://"+ip+":9999/stop")
@@ -44,6 +46,7 @@ func main() {
 	flag.Parse()
 
 	ReportDir = *dir
+	NmonPath = *nmonpath
 	os.MkdirAll(ReportDir, 777)
 
 	if *version {
@@ -66,7 +69,7 @@ func main() {
 		defer r.HandleContext(c)
 	})
 	//首页
-	r.StaticFS("/web", http.Dir("web"))
+	r.StaticFS("/web", http.Dir("./web"))
 	// 浏览报告
 	r.StaticFS("/report", http.Dir(ReportDir))
 	//生成报告,用于实时更新报告
@@ -88,7 +91,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认
 	fileName := name + time.Now().Format("20060102150405")
 
 	t, _ := strconv.Atoi(timeStr)
-	if t < 0 {
+	if t == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
 			"message": string("执行错误，请检查参数是否正确！"),
@@ -99,7 +102,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认
 		fp := filepath.Join(ReportDir, fileName)
 		os.MkdirAll(fp, 777)
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
-		exec.Command("/bin/bash", "-c", "./nmon -f -t -s "+timeStr+" -c 60 -m "+fp+" -F "+name).Run()
+		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+timeStr+" -c 60 -m "+fp+" -F "+name).Run()
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
 		time.Sleep(time.Second * time.Duration(t*60+2))
@@ -163,7 +166,7 @@ func getDirList(dirpath string) []string {
 
 //杀掉所有nmon进程
 func killNmon() {
-	ret := exec.Command("pidof", "nmon")
+	ret := exec.Command("pidof", NmonPath)
 	buf, _ := ret.Output()
 	pids := strings.Split(strings.Replace(string(buf), "\n", "", -1), " ")
 	for _, value := range pids {
