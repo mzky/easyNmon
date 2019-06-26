@@ -34,15 +34,13 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	version := flag.Bool("v", false, "显示版本号")
-	port := flag.String("p", "9999", "默认监听端口9999,自定义端口加 -p 端口号\n设置端口示例：./easyNmon -p 9999")
-	dir := flag.String("d", "report", "指定生成报告的directory")
-	nmonpath := flag.String("np", "nmon/nmon", "指定对应系统版本的nmon文件")
-	flag.Bool("web管理页面", false, "浏览器访问http://"+ip+":9999")
-	flag.Bool("启动监控", false, "参数n的值：name 生成报告的文件名\n参数t的值：time 监控时长，单位分钟\nget_url示例：http://"+ip+":9999/start?n=test&t=30")
-	flag.Bool("停止所有监控任务", false, "等同于kill掉nmon进程\nget_url示例：http://"+ip+":9999/stop")
-	flag.Bool("查看报告", false, "浏览器访问：http://"+ip+":9999/report，也可通过web管理页面入口查看")
-	flag.Bool("退出程序", false, "关闭自身，结束easyNmon进程\nget_url示例：http://"+ip+":9999/close")
+	readme := "接口(Get)：\n\t/start\t启动监控,参数n为生成报告的文件名,参数t为监控时长(单位分钟)：\n\t\thttp://" + ip + ":9999/start?n=name&t=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
+	version := flag.Bool("v", false, "version:显示版本号")
+	port := flag.String("p", "9999", "port:默认监听端口9999,自定义端口加 -p 端口号\n示例：./easyNmon -p 9999")
+	dir := flag.String("d", "report", "directory:指定生成报告的路径\n示例：./easyNmon -d /mnt/rep")
+	analysis := flag.String("a", "", "analysis:生成html图表，参数指定nmon报告文件，同目录生成html图表\n示例：./easyNmon -a ./report/nmonTestName")
+	nmonpath := flag.String("np", "nmon/nmon", "nmonpath：指定对应系统版本的nmon文件\n示例：./easyNmon -np ./nmon/nmon_xxx")
+	flag.Bool("操作说明", false, readme)
 	flag.Parse()
 
 	ReportDir = *dir
@@ -55,11 +53,12 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Println("访问web管理页面 : http://" + ip + ":" + *port)
-	fmt.Println("启动监控接口示例: http://" + ip + ":" + *port + "/start?n=testname&t=30")
-	fmt.Println("停止所有监控接口: http://" + ip + ":" + *port + "/stop")
-	fmt.Println("浏览器查看报告 :  http://" + ip + ":" + *port + "/report")
-	fmt.Println("结束easyNmon进程:  http://" + ip + ":" + *port + "/close")
+	analy := *analysis
+	if analy != "" {
+		paths, fileName := filepath.Split(analy)
+		internal.GetNmonReport(paths, fileName)
+		os.Exit(0)
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -82,6 +81,8 @@ func main() {
 	r.GET("/close", close)
 	r.GET("/stop", stop)
 
+	fmt.Println(readme)
+	fmt.Println("easyNmon running...")
 	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
 }
 
