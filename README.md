@@ -36,7 +36,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 https://github.com/mzky/easyNmon/wiki/ChangeLog
 
-### 注意：默认nmon支持CentOS6.5~7.4，Ubuntu和SUSE需要下载对应版本的nmon替换
+### 注意：默认nmon支持CentOS6.5~7.4，Ubuntu和SUSE等版本需要-np参数指定对应的版本
 
 ## 感谢：
 
