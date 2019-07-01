@@ -34,7 +34,7 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	readme := "接口(Get)：\n\t/start\t启动监控,所有参数均可为空\n\t\t参数n为生成报告的文件名_name,\n\t\t参数t为监控时长(单位分钟)_time,\n\t\t参数f为监控频率，每隔多少秒收集一次_frequency;\n\t\thttp://" + ip + ":9999/start?n=name&t=30&f=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
+	readme := "接口(Get)：\n\t/start\t启动监控,接口方式时,所有参数非必选\n\t\t参数n为生成报告的文件名,\n\t\t参数t为监控时长(单位分钟),\n\t\t参数f为监控频率，每隔多少秒收集一次;\n\t\thttp://" + ip + ":9999/start?n=name&t=30&f=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
 	version := flag.Bool("v", false, "version:显示版本号")
 	port := flag.String("p", "9999", "port:默认监听端口9999,自定义端口加 -p 端口号\n示例：./easyNmon -p 9999")
 	dir := flag.String("d", "report", "directory:指定生成报告的路径\n示例：./easyNmon -d /mnt/rep")
