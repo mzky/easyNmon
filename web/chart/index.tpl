@@ -75,7 +75,7 @@
 				},
                 dataZoom: {
                     show: true,
-                    start : 70
+                    start : 0
                 },
 				xAxis: {
 					type: 'category',
@@ -170,7 +170,7 @@
 				},
                 dataZoom: {
                     show: true,
-                    start : 70
+                    start : 0
                 },
 				xAxis: [{
 					type: 'category',
@@ -283,7 +283,7 @@
 				},
                 dataZoom: {
                     show: true,
-                    start : 70
+                    start : 0
                 },
 				xAxis: {
 					type: 'category',
@@ -380,7 +380,7 @@
 				},	
                 dataZoom: {
                     show: true,
-                    start : 70
+                    start : 0
                 },
 				xAxis: {
 					type: 'category',
