@@ -33,18 +33,26 @@
                             <div class="widget-body am-fr">
                                 <form class="am-form tpl-form-line-form">
                                     <div class="am-form-group">
-                                        <label for="user-name" class="am-u-sm-5 am-form-label">测试项名称 <span class="tpl-form-line-small-title">Name</span></label>
+                                        <label for="user-name" class="am-u-sm-5 am-form-label"><span class="tpl-form-line-small-title">Name</span> 任务名称 </label>
                                         <div class="am-u-sm-7">
-                                            <input type="text" class="am-form-field tpl-form-no-bg" id="name" placeholder="请输入测试项名称">
-																						<small>不支持中文任务</small>
+                                            <input type="text" class="am-form-field tpl-form-no-bg" id="name" placeholder="输入监控任务名称">
+																						<small>不支持中文及&/\等符号</small>
                                         </div>
                                     </div>
 
                                     <div class="am-form-group">
-                                        <label for="user-email" class="am-u-sm-5 am-form-label">测试时长 <span class="tpl-form-line-small-title">Time</span></label>
+                                        <label for="user-email" class="am-u-sm-5 am-form-label"><span class="tpl-form-line-small-title">Time</span> 监控时长 </label>
                                         <div class="am-u-sm-7">
-                                            <input type="text" class="am-form-field tpl-form-no-bg" id="time" placeholder="请输入测试时长">
-                                            <small>单位为分钟</small>
+                                            <input type="text" class="am-form-field tpl-form-no-bg" id="time" placeholder="输入监控时长">
+                                            <small>单位为分钟，可以为空，默认时长为30分钟</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-5 am-form-label"><span class="tpl-form-line-small-title">Frequency</span> 监控频率 </label>
+                                        <div class="am-u-sm-7">
+                                            <input type="text" class="am-form-field tpl-form-no-bg" id="frequency" placeholder="输入监控频率">
+                                            <small>单位为秒，可以为空，默认频率为30秒</small>
                                         </div>
                                     </div>
 
@@ -125,14 +133,14 @@
 				}
 				
 				$('#start').on('click', function() {
-					if($('#name').val()=="" || $('#time').val()==""){
-						$('#message').html("参数不能为空！");
+					if($('#name').val()==""||$('#time').val()==""||$('#frequency').val()==""){
+						$('#message').html("通过web页面执行时，参数不能为空！");
 						$('#messagebox').modal({
 							relatedTarget: this
 						});
 						return
 					}
-					ajaxGet("start?n="+$('#name').val()+"&t="+$('#time').val());
+					ajaxGet("start?n="+$('#name').val()+"&t="+$('#time').val()+"&f="+$('#frequency').val());
 				});
 				$('#stop').on('click', function() {
 					ajaxGet("stop");

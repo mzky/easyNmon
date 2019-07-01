@@ -6,13 +6,18 @@
 		<!-- 引入 echarts.js -->
 		<script src="echarts.min.js"></script>
 		<script src="/web/js/jquery.min.js"></script>
+        <style>
+        div {
+                   display:inline-block ; 
+              }
+        </style>
 	</head>
-	<body>
+	<body style="padding:0px;margin:0">
 		<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-		<div id="cpu" style="padding:1px;float:left;width:49%;height:400px;"></div>
-		<div id="mem" style="padding:1px;float:left;width:49%;height:400px;"></div>
-		<div id="net" style="padding:1px;float:left;width:49%;height:400px;"></div>
-		<div id="disk" style="padding:1px;float:left;width:49%;height:400px;"></div>
+		<div id="cpu" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+		<div id="mem" style="float:right;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+		<div id="net" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+		<div id="disk" style="float:right;width:49.8%;height:450px;border:1px solid #DDD;"></div>
 		<script type="text/javascript">
 			// 基于准备好的dom，初始化echarts实例
 			var cpuChart = echarts.init(document.getElementById('cpu'));
@@ -50,15 +55,28 @@
 					data: ['User%', 'Sys%', 'Wait%']
 				},
 				grid: {
-					top:'20%',left: '5%',right: '10%',bottom: '10%',
+					top:'20%',left: '10%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
-					right: '6%',
+                    show:true, 
+                    x: '80%', 
+                    y: '5%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}
+						saveAsImage: { pixelRatio: 2},
+                        dataZoom : {
+                            show : true,
+                            title : {
+                                dataZoom : '区域缩放',
+                                dataZoomReset : '区域缩放-后退'
+                            }
+                        },
 					}
 				},
+                dataZoom: {
+                    show: true,
+                    start : 70
+                },
 				xAxis: {
 					type: 'category',
 					boundaryGap: false,
@@ -80,7 +98,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#006699',
 							label : {
 								show:true
 							}
@@ -132,15 +150,28 @@
 					data: ['memtotal MB','memfree MB','active MB']
 				},
 				toolbox: {
-					right: '6%',
+                    show:true, 
+                    x: '80%', 
+                    y: '5%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}
+						saveAsImage: { pixelRatio: 2},
+                        dataZoom : {
+                            show : true,
+                            title : {
+                                dataZoom : '区域缩放',
+                                dataZoomReset : '区域缩放-后退'
+                            }
+                        },
 					}
 				},
 				grid: {
-					top:'20%',left: '5%',right: '10%',bottom: '10%',
+					top:'20%',left: '10%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
+                dataZoom: {
+                    show: true,
+                    start : 70
+                },
 				xAxis: [{
 					type: 'category',
 					boundaryGap: false,
@@ -155,7 +186,19 @@
 								color: '#0099CC'
 							}
 						},
-						data: memfree
+						data: memfree,
+						markLine : {
+							symbol : 'none',
+							itemStyle : {
+							normal : {
+							color:'#0099CC',
+							label : {
+								show:true
+							}
+						}
+						},
+						data : [{type : 'average', name: '平均值'}]
+						}	
 					}, {
 						name: 'memtotal MB',
 						type: 'line',
@@ -169,7 +212,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#CC3333',
 							label : {
 								show:true
 							}
@@ -186,14 +229,14 @@
 							}
 					      	},
 					        data: active,
-					        markLine : {
-				                symbol : 'none',
+					    markLine : {
+				            symbol : 'none',
 					        itemStyle : {
-						normal : {
-		 				color:'#CC9933',
-		       				label : {
-			       			show:true
-		       				}
+                            normal : {
+                            color:'#CC9933',
+                                label : {
+                                show:true
+                            }
 					 }
 				       },
 					data : [{type : 'average', name: '平均值'}]
@@ -220,15 +263,28 @@
 					data: ['Total-Read KB/s', 'Total-Write KB/s']
 				},
 				grid: {
-					top:'20%',left: '5%',right: '10%',bottom: '10%',
+					top:'20%',left: '10%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
-					right: '6%',
+                   show:true, 
+                   x: '80%', 
+                   y: '5%',
 					feature: {
-						saveAsImage: { pixelRatio: 2}
+                        saveAsImage: { pixelRatio: 2},
+                        dataZoom : {
+                            show : true,
+                            title : {
+                                dataZoom : '区域缩放',
+                                dataZoomReset : '区域缩放-后退'
+                            }
+                        },
 					}
 				},
+                dataZoom: {
+                    show: true,
+                    start : 70
+                },
 				xAxis: {
 					type: 'category',
 					boundaryGap: false,
@@ -237,6 +293,11 @@
 				yAxis: { type: 'value' },
 				series: [{
 						name: 'Total-Read KB/s',
+                        itemStyle: {
+                        	normal: {
+                        		color: '#CC3333'
+                        	}
+                        },
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetRead,
@@ -244,7 +305,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#CC3333',
 							label : {
 								show:true
 							}
@@ -255,6 +316,11 @@
 					},
 					{
 						name: 'Total-Write KB/s',
+                         itemStyle: {
+                        	normal: {
+                        		color: '#006699'
+                        	}
+                        },
 						type: 'line',
 						areaStyle: {normal: {}},
 						data: NetWrite,
@@ -262,7 +328,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#006699',
 							label : {
 								show:true
 							}
@@ -292,17 +358,30 @@
 					data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
 				},
 				grid: {
-					top:'20%',left: '5%',right: '10%',bottom: '10%',
+					top:'20%',left: '10%',right: '10%',bottom: '10%',
 					containLabel: true
 				},
 				toolbox: {
-					right: '6%',
+                    show:true, 
+                    x: '80%', 
+                    y: '5%',
 					feature: {
 						saveAsImage: {
 							pixelRatio: 2
-						} 
+						} ,
+                        dataZoom : {
+                            show : true,
+                            title : {
+                                dataZoom : '区域缩放',
+                                dataZoomReset : '区域缩放-后退'
+                            }
+                        },
 					}
-				},				
+				},	
+                dataZoom: {
+                    show: true,
+                    start : 70
+                },
 				xAxis: {
 					type: 'category',
 					boundaryGap: false,
@@ -323,7 +402,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#FF9966',
 							label : {
 								show:true
 							}
@@ -346,7 +425,7 @@
 							symbol : 'none',
 							itemStyle : {
 							normal : {
-							color:'#1e90ff',
+							color:'#6699CC',
 							label : {
 								show:true
 							}

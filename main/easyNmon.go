@@ -34,7 +34,7 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	readme := "接口(Get)：\n\t/start\t启动监控,参数n为生成报告的文件名,参数t为监控时长(单位分钟)：\n\t\thttp://" + ip + ":9999/start?n=name&t=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
+	readme := "接口(Get)：\n\t/start\t启动监控,所有参数均可为空\n\t\t参数n为生成报告的文件名_name,\n\t\t参数t为监控时长(单位分钟)_time,\n\t\t参数f为监控频率，每隔多少秒收集一次_frequency;\n\t\thttp://" + ip + ":9999/start?n=name&t=30&f=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
 	version := flag.Bool("v", false, "version:显示版本号")
 	port := flag.String("p", "9999", "port:默认监听端口9999,自定义端口加 -p 端口号\n示例：./easyNmon -p 9999")
 	dir := flag.String("d", "report", "directory:指定生成报告的路径\n示例：./easyNmon -d /mnt/rep")
@@ -82,16 +82,17 @@ func main() {
 	r.GET("/stop", stop)
 
 	fmt.Println(readme)
-	fmt.Println("easyNmon running...")
 	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
 }
 
-func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认30分钟
-	name := c.DefaultQuery("n", "name")  // 取name值
-	timeStr := c.DefaultQuery("t", "30") // 取执行时间,单位分钟
+func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
+	name := c.DefaultQuery("n", "name")    // 取name值
+	timeStr := c.DefaultQuery("t", "30")   // 取执行时长,单位分钟
+	frequency := c.DefaultQuery("f", "30") //频率，多少秒取一次
 	fileName := name + time.Now().Format("20060102150405")
 
 	t, _ := strconv.Atoi(timeStr)
+	f, _ := strconv.Atoi(frequency)
 	if t == 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  http.StatusOK,
@@ -103,7 +104,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认
 		fp := filepath.Join(ReportDir, fileName)
 		os.MkdirAll(fp, 777)
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
-		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+timeStr+" -c 60 -m "+fp+" -F "+name).Run()
+		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+frequency+" -c "+strconv.Itoa(t*60/f)+" -m "+fp+" -F "+name).Run()
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
 		time.Sleep(time.Second * time.Duration(t*60+2))
@@ -111,7 +112,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time 其中&后可为空 默认
 	}()
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": string("已执行" + name + "场景监控，测试时长 " + timeStr + " 分钟"),
+		"message": string("已执行" + name + "场景，监控时长" + timeStr + "分钟，频率为" + frequency + "秒！"),
 	})
 }
 
