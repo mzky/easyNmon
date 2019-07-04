@@ -49,9 +49,9 @@ go的web框架gin：https://github.com/gin-gonic/gin
 ## 其它
 #### jmeter4.x/5.x的html报告汉化模版：
 
-https://github.com/mzky/jmeter4.0-cn-report-template
+https://github.com/mzky/jmeter4.x-cn-report-template
 
-https://github.com/mzky/jmeter5.0-cn-report-template
+https://github.com/mzky/jmeter5.x-cn-report-template
 
 
 ### 因需求改动过大，并且不再使用Nmon作为采集工具，另开一个分支项目
