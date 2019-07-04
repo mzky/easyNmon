@@ -47,7 +47,7 @@ go的web框架gin：https://github.com/gin-gonic/gin
 
 
 ## 其它
-#### jmeter4.0/5.0的html报告汉化模版：
+#### jmeter4.x/5.x的html报告汉化模版：
 
 https://github.com/mzky/jmeter4.0-cn-report-template
 
