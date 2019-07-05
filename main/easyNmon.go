@@ -34,12 +34,12 @@ func main() {
 		ip = networkIp.IP.String()
 	}
 
-	readme := "接口(Get)：\n\t/start\t启动监控,接口方式时,所有参数非必选\n\t\t参数n为生成报告的文件名,\n\t\t参数t为监控时长(单位分钟),\n\t\t参数f为监控频率，每隔多少秒收集一次;\n\t\thttp://" + ip + ":9999/start?n=name&t=30&f=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
 	version := flag.Bool("v", false, "version:显示版本号")
 	port := flag.String("p", "9999", "port:默认监听端口9999,自定义端口加 -p 端口号\n示例：./easyNmon -p 9999")
 	dir := flag.String("d", "report", "directory:指定生成报告的路径\n示例：./easyNmon -d /mnt/rep")
 	analysis := flag.String("a", "", "analysis:生成html图表，参数指定nmon报告文件，同目录生成html图表\n示例：./easyNmon -a ./report/nmonTestName")
 	nmonpath := flag.String("np", "nmon/nmon", "nmonpath：指定对应系统版本的nmon文件\n示例：./easyNmon -np ./nmon/nmon_xxx")
+	readme := "接口(Get)：\n\t/start\t启动监控,接口方式时,所有参数非必选\n\t\t参数n为生成报告的文件名,\n\t\t参数t为监控时长(单位分钟),\n\t\t参数f为监控频率，每隔多少秒收集一次;\n\t\thttp://" + ip + ":9999/start?n=name&t=30&f=30\n\t/stop\t停止所有监控任务：\n\t\thttp://" + ip + ":9999/stop\n\t/report\t查看报告：\n\t\thttp://" + ip + ":9999/report\n\t/close\t关闭自身：\n\t\thttp://" + ip + ":9999/close\n管理页面：\n\t通过浏览器访问web管理页面：\n\thttp://" + ip + ":9999"
 	flag.Bool("操作说明", false, readme)
 	flag.Parse()
 
@@ -60,6 +60,7 @@ func main() {
 		os.Exit(0)
 	}
 
+	sysinfo := internal.SysInfo()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	//重定向首页--解决静态文件与接口共存
@@ -75,14 +76,24 @@ func main() {
 	r.GET("/generate/:name/", func(c *gin.Context) {
 		name := c.Param("name")
 		internal.GetNmonReport(filepath.Join(ReportDir, name), name[:len(name)-14])
-		c.JSON(200, gin.H{"status": "ok"})
+		c.JSON(http.StatusOK, gin.H{
+			"message": "更新生成报告",
+		})
+	})
+	r.GET("/sysinfo", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": sysinfo,
+		})
 	})
 	r.GET("/start", start)
 	r.GET("/close", close)
 	r.GET("/stop", stop)
-
+	readme = strings.Replace(readme, "9999", *port, -1)
 	fmt.Println(readme)
+	fmt.Println("执行的nmon文件：" + *nmonpath)
+	fmt.Println("存放报告的目录：" + *dir)
 	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
+	fmt.Println("easyNmon启动失败，端口被占用!")
 }
 
 func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
@@ -95,7 +106,6 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	f, _ := strconv.Atoi(frequency)
 	if t == 0 {
 		c.JSON(http.StatusOK, gin.H{
-			"status":  http.StatusOK,
 			"message": string("执行错误，请检查参数是否正确！"),
 		})
 		return
@@ -111,14 +121,12 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 		internal.GetNmonReport(fp, name)
 	}()
 	c.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
 		"message": string("已执行" + name + "场景，监控时长" + timeStr + "分钟，频率为" + frequency + "秒！"),
 	})
 }
 
 func close(c *gin.Context) { //结束自身进程
 	c.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
 		"message": "已结束EasyNmon服务!",
 	})
 	go func() {
@@ -130,7 +138,6 @@ func close(c *gin.Context) { //结束自身进程
 
 func stop(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"status":  http.StatusOK,
 		"message": "已结束所有服务器监控任务!",
 	})
 	go func() {
@@ -169,10 +176,12 @@ func getDirList(dirpath string) []string {
 //杀掉所有nmon进程
 func killNmon() {
 	ret := exec.Command("pidof", NmonPath)
-	buf, _ := ret.Output()
-	pids := strings.Split(strings.Replace(string(buf), "\n", "", -1), " ")
-	for _, value := range pids {
-		pid, _ := strconv.Atoi(value)
-		syscall.Kill(pid, syscall.SIGKILL)
+	buf, err := ret.Output()
+	if err == nil {
+		pids := strings.Split(strings.Replace(string(buf), "\n", "", -1), " ")
+		for _, value := range pids {
+			pid, _ := strconv.Atoi(value)
+			syscall.Kill(pid, syscall.SIGKILL)
+		}
 	}
 }
