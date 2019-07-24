@@ -4,7 +4,6 @@ import (
 	"easyNmon/internal"
 	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net"
 	"net/http"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -88,12 +89,12 @@ func main() {
 	r.GET("/start", start)
 	r.GET("/close", close)
 	r.GET("/stop", stop)
-	readme = strings.Replace(readme, "9999", *port, -1)
+	readme = strings.ReplaceAll(readme, "9999", *port)
 	fmt.Println(readme)
 	fmt.Println("执行的nmon文件：" + *nmonpath)
 	fmt.Println("存放报告的目录：" + *dir)
 	r.Run(":" + *port) // listen and serve on 0.0.0.0:8080
-	fmt.Println("easyNmon启动失败，端口被占用!")
+	fmt.Println("easyNmon启动失败，查看端口是否被占用!")
 }
 
 func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
@@ -114,6 +115,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 		fp := filepath.Join(ReportDir, fileName)
 		os.MkdirAll(fp, 777)
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
+		exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
 		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+frequency+" -c "+strconv.Itoa(t*60/f)+" -m "+fp+" -F "+name).Run()
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
@@ -178,7 +180,7 @@ func killNmon() {
 	ret := exec.Command("pidof", NmonPath)
 	buf, err := ret.Output()
 	if err == nil {
-		pids := strings.Split(strings.Replace(string(buf), "\n", "", -1), " ")
+		pids := strings.Split(strings.ReplaceAll(string(buf), "\n", ""), " ")
 		for _, value := range pids {
 			pid, _ := strconv.Atoi(value)
 			syscall.Kill(pid, syscall.SIGKILL)

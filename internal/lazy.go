@@ -2,37 +2,39 @@ package internal
 
 import (
 	"bufio"
-	"github.com/shopspring/decimal"
-	"html/template"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
+
+	"github.com/shopspring/decimal"
 )
 
 type NmonReport struct {
 	ScriptName string
-	XAxisdatas []string
-	CPUUsers   []float64
-	CPUSyss    []float64
-	CPUWaits   []float64
-	Memfrees   []float64
-	Actives    []float64
-	Memtotals  []float64
-	NetReads   []float64
-	NetWrites  []float64
-	DiskReads  []float64
-	DiskWrites []float64
+	XAxisdatas string
+	CPUUsers   string
+	CPUSyss    string
+	CPUWaits   string
+	Memfrees   string
+	Actives    string
+	Memtotals  string
+	NetReads   string
+	NetWrites  string
+	DiskReads  string
+	DiskWrites string
 }
 
 func GenIndexPage(nr *NmonReport, fPath string) {
-	tpl := template.Must(template.New("index.tpl").ParseFiles(filepath.Join("web", "chart", "index.tpl")))
-	file, err := os.Create(filepath.Join(fPath, "index.html"))
+	tpl := template.Must(template.New("data.tpl").ParseFiles(filepath.Join("web", "chart", "data.tpl")))
+	file, err := os.Create(filepath.Join(fPath, "data.json"))
 	if err != nil {
 		log.Println(err)
 	}
-	err = tpl.ExecuteTemplate(file, "index.tpl", nr)
+	err = tpl.Execute(file, nr)
 	if err != nil {
 		log.Println(err)
 	}
@@ -122,7 +124,7 @@ func GetNmonReport(filePath string, name string) {
 			continue
 		}
 		if hasZZZZ && strings.HasPrefix(strLine, "ZZZZ,") {
-			sliceZZZZTime = append(sliceZZZZTime, arr[2])
+			sliceZZZZTime = append(sliceZZZZTime, "\""+arr[2]+"\"")
 			continue
 		}
 		if hasCPUAll && strings.HasPrefix(strLine, "CPU_ALL,") {
@@ -191,29 +193,29 @@ func GetNmonReport(filePath string, name string) {
 		log.Println("解析nmon结果文件失败")
 		return
 	} else {
-		nr.XAxisdatas = sliceZZZZTime
+		nr.XAxisdatas = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceZZZZTime), "[]"), " ", ",")
 	}
 
 	if hasCPUAll {
-		nr.CPUUsers = sliceCPUUser
-		nr.CPUSyss = sliceCPUSys
-		nr.CPUWaits = sliceCPUWait
+		nr.CPUUsers = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceCPUUser), "[]"), " ", ",")
+		nr.CPUSyss = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceCPUSys), "[]"), " ", ",")
+		nr.CPUWaits = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceCPUWait), "[]"), " ", ",")
 	}
 
 	if hasMem {
-		nr.Memfrees = sliceMemFree
-		nr.Actives = sliceMemActive
-		nr.Memtotals = sliceMemTotal
+		nr.Memfrees = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceMemFree), "[]"), " ", ",")
+		nr.Actives = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceMemActive), "[]"), " ", ",")
+		nr.Memtotals = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceMemTotal), "[]"), " ", ",")
 	}
 
 	if hasNet {
-		nr.NetReads = sliceNetReadTotal
-		nr.NetWrites = sliceNetWriteTotal
+		nr.NetReads = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceNetReadTotal), "[]"), " ", ",")
+		nr.NetWrites = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceNetWriteTotal), "[]"), " ", ",")
 	}
 
 	if hasDiskRead && hasDiskWrite {
-		nr.DiskReads = sliceDiskRead
-		nr.DiskWrites = sliceDiskWrite
+		nr.DiskReads = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceDiskRead), "[]"), " ", ",")
+		nr.DiskWrites = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceDiskWrite), "[]"), " ", ",")
 	}
 	if nr != nil {
 		nr.ScriptName = name
