@@ -4,6 +4,7 @@ import (
 	"easyNmon/internal"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -64,13 +65,23 @@ func main() {
 	sysinfo := internal.SysInfo()
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	//重定向首页--解决静态文件与接口共存
+
+	r.LoadHTMLFiles("web/index.html")
 	r.GET("/", func(c *gin.Context) {
-		c.Request.URL.Path = "/web"
-		defer r.HandleContext(c)
+		c.Header("Content-Type", "text/html; charset=utf-8")
+		c.HTML(http.StatusOK, "index.html", gin.H{})
 	})
+	//重定向首页--解决静态文件与接口共存
+	// r.GET("/", func(c *gin.Context) {
+	// 	//c.Request.URL.Host = "http://127.0.0.1:8090"
+	// 	c.Header("Content-Type", "text/html; charset=utf-8")
+	// 	c.HTML(200, "./web/index.html", nil)
+	// 	//c.Request.URL.Path = "/web"
+	// 	defer r.HandleContext(c)
+	// })
+
 	//首页
-	r.StaticFS("/web", http.Dir("./web"))
+	r.Static("/js", "web/js")
 	// 浏览报告
 	r.StaticFS("/report", http.Dir(ReportDir))
 	//生成报告,用于实时更新报告
@@ -114,8 +125,19 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	go func() {
 		fp := filepath.Join(ReportDir, fileName)
 		os.MkdirAll(fp, 777)
+
+		buf, err := ioutil.ReadFile("web/chart/index.html")
+		if err != nil {
+			fmt.Println(err)
+		}
+		content := string(buf)
+		newContent := strings.ReplaceAll(content, "{{loopTime}}", frequency+"000")
+
+		//重新写入
+		ioutil.WriteFile(filepath.Join(fp, "index.html"), []byte(newContent), 0)
+
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
-		exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
+		//	exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
 		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+frequency+" -c "+strconv.Itoa(t*60/f)+" -m "+fp+" -F "+name).Run()
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
