@@ -29,7 +29,7 @@ var (
 )
 
 func main() {
-	ip := ""
+	ip := "127.0.0.1"
 	netaddr, _ := net.InterfaceAddrs()
 	networkIp, _ := netaddr[1].(*net.IPNet)
 	if !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
@@ -47,8 +47,11 @@ func main() {
 
 	ReportDir = *dir
 	NmonPath = *nmonpath
-	os.MkdirAll(ReportDir, 777)
-
+	err := os.MkdirAll(ReportDir, 755)
+	if err!=nil{
+		fmt.Println("easyNmon启动权限不足!")
+		return
+	}
 	if *version {
 		fmt.Println("Version: " + Version)
 		fmt.Println("BuildTime: " + BuildTime)
@@ -66,11 +69,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	r.LoadHTMLFiles("web/index.html")
-	r.GET("/", func(c *gin.Context) {
-		c.Header("Content-Type", "text/html; charset=utf-8")
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
+	
 	//重定向首页--解决静态文件与接口共存
 	// r.GET("/", func(c *gin.Context) {
 	// 	//c.Request.URL.Host = "http://127.0.0.1:8090"
@@ -81,6 +80,11 @@ func main() {
 	// })
 
 	//首页
+	r.LoadHTMLFiles("web/index.html")
+	r.GET("/", func(c *gin.Context) {
+		c.Header("Content-Type", "text/html; charset=utf-8")
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 	r.Static("/js", "web/js")
 	// 浏览报告
 	r.StaticFS("/report", http.Dir(ReportDir))
@@ -112,7 +116,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	name := c.DefaultQuery("n", "name")    // 取name值
 	timeStr := c.DefaultQuery("t", "30")   // 取执行时长,单位分钟
 	frequency := c.DefaultQuery("f", "30") //频率，多少秒取一次
-	fileName := name + time.Now().Format("20060102150405")
+	fileName := strings.Join([]string{name,time.Now().Format("20060102150405")},"")
 
 	t, _ := strconv.Atoi(timeStr)
 	f, _ := strconv.Atoi(frequency)
@@ -131,21 +135,21 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 			fmt.Println(err)
 		}
 		content := string(buf)
-		newContent := strings.ReplaceAll(content, "{{loopTime}}", frequency+"000")
+		newContent := strings.ReplaceAll(content, "{{loopTime}}", strings.Join([]string{frequency,"000"},""))
 
 		//重新写入
 		ioutil.WriteFile(filepath.Join(fp, "index.html"), []byte(newContent), 0)
 
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
 		//	exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
-		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+frequency+" -c "+strconv.Itoa(t*60/f)+" -m "+fp+" -F "+name).Run()
+		exec.Command("/bin/bash", "-c", strings.Join([]string{NmonPath,"-f -t -s",frequency,"-c",strconv.Itoa(t*60/f),"-m",fp,"-F",name}," ")).Run()
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
 		time.Sleep(time.Second * time.Duration(t*60+2))
 		internal.GetNmonReport(fp, name)
 	}()
 	c.JSON(http.StatusOK, gin.H{
-		"message": string("已执行" + name + "场景，监控时长" + timeStr + "分钟，频率为" + frequency + "秒！"),
+		"message": strings.Join([]string{"已执行", name,"场景，监控时长",timeStr,"分钟，频率为" ,frequency,"秒！"},""),
 	})
 }
 

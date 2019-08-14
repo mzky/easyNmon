@@ -109,49 +109,54 @@
         <script>
             $(document).ready(function() {
                 var hostname = window.location.host;
-                var ajaxGet = function(para) {
+                var ajaxGet = function(para,button) {
                     $.ajax({
                         url: "http://" + hostname + "/" + para,
                         type: "GET",
                         dataType: "json",
+                        beforeSend: function(){
+                            button.attr({ disabled: "disabled" });
+                        },
                         success: function(response) {
-                            $('#message').html(response.message)
+                            $('#message').html(response.message);
                             $('#messagebox').modal({
                                 relatedTarget: this
-                            });
+                            })
                         },
                         error: function(XmlHttpRequest, textStatus, errorThrown) {
                             //调用失败
                             $('#message').html("执行异常，请检查easyNmon服务是否启动正常！");
                             $('#messagebox').modal({
                                 relatedTarget: this
-                            });
+                            })
+                        },
+                        complete: function(){
+                            button.removeAttr("disabled");
                         }
                     });
-                }
+                };
 
                 $('#start').on('click', function() {
-                    if ($('#name').val() == "" || $('#time').val() == "" || $('#frequency').val() == "") {
+                    if ($('#name').val() === "" || $('#time').val() === "" || $('#frequency').val() === "") {
                         $('#message').html("通过web页面执行时，参数不能为空！");
                         $('#messagebox').modal({
                             relatedTarget: this
                         });
                         return
                     }
-                    ajaxGet("start?n=" + $('#name').val() + "&t=" + $('#time').val() + "&f=" + $(
-                        '#frequency').val());
+                    ajaxGet("start?n=" + $('#name').val() + "&t=" + $('#time').val() + "&f=" + $('#frequency').val(),$('#start'));
                 });
                 $('#stop').on('click', function() {
-                    ajaxGet("stop");
+                    ajaxGet("stop",$('#stop'));
                 });
                 $('#reprot').on('click', function() {
                     window.location.href = "http://" + hostname + "/report";
                 });
                 $('#close').on('click', function() {
-                    ajaxGet("close");
+                    ajaxGet("close",$('#close'));
                 });
                 $('#sysinfo').on('click', function() {
-                    ajaxGet("sysinfo");
+                    ajaxGet("sysinfo",$('#sysinfo'));
                 });
             });
         </script>
