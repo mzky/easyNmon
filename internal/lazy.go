@@ -41,7 +41,8 @@ func GenIndexPage(nr *NmonReport, fPath string) {
 }
 
 func GetNmonReport(filePath string, name string) {
-	fileName := filepath.Join(filePath, name)
+	//fileName := filepath.Join(filePath, name)
+	fileName := GetFiles(filePath, name)
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Println(err)
@@ -189,10 +190,11 @@ func GetNmonReport(filePath string, name string) {
 
 	nr := new(NmonReport)
 
-	if !hasZZZZ {
-		log.Println("解析nmon结果文件失败")
-		return
-	} else {
+	//if !hasZZZZ {
+	//	log.Println("解析nmon结果文件失败")
+	//	return
+	//} else {
+	if hasZZZZ {
 		nr.XAxisdatas = strings.ReplaceAll(strings.Trim(fmt.Sprint(sliceZZZZTime), "[]"), " ", ",")
 	}
 

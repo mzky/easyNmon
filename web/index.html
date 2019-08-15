@@ -114,6 +114,7 @@
                         url: "http://" + hostname + "/" + para,
                         type: "GET",
                         dataType: "json",
+			cache:false,
                         beforeSend: function(){
                             button.attr({ disabled: "disabled" });
                         },
