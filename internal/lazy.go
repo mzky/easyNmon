@@ -31,6 +31,8 @@ type NmonReport struct {
 func GenIndexPage(nr *NmonReport, fPath string) {
 	tpl := template.Must(template.New("data.tpl").ParseFiles(filepath.Join("web", "chart", "data.tpl")))
 	file, err := os.Create(filepath.Join(fPath, "data.json"))
+	os.Chmod(filepath.Join(fPath, "data.json"), os.ModePerm)
+
 	if err != nil {
 		log.Println(err)
 	}

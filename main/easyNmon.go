@@ -48,7 +48,8 @@ func main() {
 
 	ReportDir = *dir
 	NmonPath = *nmonpath
-	err := os.MkdirAll(ReportDir, 755)
+	syscall.Umask(0)
+	err := os.MkdirAll(ReportDir, os.ModePerm)
 	if err != nil {
 		fmt.Println("easyNmon启动权限不足!")
 		return
@@ -132,7 +133,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	}
 	go func() {
 		fp := filepath.Join(ReportDir, fileName)
-		os.MkdirAll(fp, 777)
+		os.MkdirAll(fp, os.ModePerm)
 
 		buf, err := ioutil.ReadFile("web/chart/index.html")
 		if err != nil {
@@ -147,6 +148,10 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
 		//	exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
 		exec.Command("/bin/bash", "-c", strings.Join([]string{NmonPath, "-f -t -s", frequency, "-c", strconv.Itoa(t * 60 / f), "-m", fp, "-F", name}, " ")).Run()
+		os.Chmod(filepath.Join(fp, "index.html"), os.ModePerm)
+		os.Chmod(filepath.Join(fp, "echarts.min.js"), os.ModePerm)
+		os.Chmod(filepath.Join(fp, name), os.ModePerm)
+
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
 		time.Sleep(time.Second * time.Duration(t*60+2))
