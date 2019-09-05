@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>服务器性能监控报告</title>
+        <script src="echarts.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <style>
+            div { display:inline-block ; }
+        </style>
+    </head>
+    <body style="padding:0px;margin:0">
+        <div id="cpu" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+        <div id="mem" style="float:right;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+        <div id="net" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+        <div id="disk" style="float:right;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+        <script type="text/javascript">
+            var cpuChart = echarts.init(document.getElementById('cpu'));
+            var memChart = echarts.init(document.getElementById('mem'));
+            var netChart = echarts.init(document.getElementById('net'));
+            var diskChart = echarts.init(document.getElementById('disk'));
+            var url = window.location.href;
+
+            function ajaxGet() {
+                $.ajax({
+                    url: url.replace('report', 'generate'),
+                    type: "GET",
+                    async: true,
+                    cache: false,
+                    success: function() {
+                        $.get('data.json', function(jsonStr) {
+                            var res;
+                            try{
+                                res = JSON.parse(jsonStr);
+                            }catch (e) {
+                                res = jsonStr;
+                            }
+
+                            var script = res.script;
+                            var xAxisdata = res.xAxisdata;
+                            var cpuUser = res.cpuUser;
+                            var cpuSys = res.cpuSys;
+                            var cpuWait = res.cpuWait;
+                            var memfree = res.memfree;
+                            var active = res.active;
+                            var memtotal = res.memtotal;
+                            var NetRead = res.NetRead;
+                            var NetWrite = res.NetWrite;
+                            var DiskRead = res.DiskRead;
+                            var DiskWrite = res.DiskWrite;
+
+                            var CPU = {
+                                backgroundColor: "#F2F8FF",
+                                title: {
+                                    top: '15',
+                                    x: 'center',
+                                    text: script + '-CPU总体占用情况'
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        animation: false
+                                    }
+                                },
+                                legend: {
+                                    top: '45',
+                                    x: 'center',
+                                    data: ['User%', 'Sys%', 'Wait%']
+                                },
+                                grid: {
+                                    top: '20%',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: '10%',
+                                    containLabel: true
+                                },
+                                toolbox: {
+                                    show: true,
+                                    x: '80%',
+                                    y: '5%',
+                                    feature: {
+                                        saveAsImage: {
+                                            pixelRatio: 2
+                                        },
+                                        dataZoom: {
+                                            show: true,
+                                            title: {
+                                                dataZoom: '区域缩放',
+                                                dataZoomReset: '区域缩放-后退'
+                                            }
+                                        },
+                                    }
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start: 0
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: xAxisdata
+                                },
+                                yAxis: {
+                                    type: 'value',
+                                    scale: true,
+                                    max: 100,
+                                    min: 0,
+                                    boundaryGap: [0.2, 0.2],
+                                    axisLabel: {
+                                        show: true,
+                                        interval: 'auto',
+                                        formatter: '{value} %'
+                                    },
+                                    axisTick: {
+                                        inside: true
+                                    },
+                                    scale: true
+                                },
+                                series: [{
+                                        name: 'Sys%',
+                                        stack: '总量',
+                                        type: 'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#33CC99'
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: cpuSys,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#33CC99',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    },
+                                    {
+                                        name: 'User%',
+                                        type: 'line',
+                                        stack: '总量',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#226699'
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: cpuUser,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#226699',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    },
+                                    {
+                                        name: 'Wait%',
+                                        type: 'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#DD3300'
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: cpuWait,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#DD3300',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    }
+                                ]
+                            };
+
+                            var MEM = {
+                                backgroundColor: "#F2F8FF",
+                                title: {
+                                    top: '15',
+                                    x: 'center',
+                                    text: script + '-内存使用情况'
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        animation: false
+                                    }
+                                },
+                                legend: {
+                                    top: '45',
+                                    x: 'center',
+                                    data: ['memtotal MB', 'memfree MB', 'active MB']
+                                },
+                                toolbox: {
+                                    show: true,
+                                    x: '80%',
+                                    y: '5%',
+                                    feature: {
+                                        saveAsImage: {
+                                            pixelRatio: 2
+                                        },
+                                        dataZoom: {
+                                            show: true,
+                                            title: {
+                                                dataZoom: '区域缩放',
+                                                dataZoomReset: '区域缩放-后退'
+                                            }
+                                        },
+                                    }
+                                },
+                                grid: {
+                                    top: '20%',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: '10%',
+                                    containLabel: true
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start: 0
+                                },
+                                xAxis: [{
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: xAxisdata
+                                }],
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                    name: 'memfree MB',
+                                    type: 'line',
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#33CC99'
+                                        }
+                                    },
+                                    data: memfree,
+                                    markLine: {
+                                        symbol: 'none',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#33CC99',
+                                                label: {
+                                                    show: true
+                                                }
+                                            }
+                                        },
+                                        data: [{
+                                            type: 'average',
+                                            name: '平均值'
+                                        }]
+                                    }
+                                }, {
+                                    name: 'memtotal MB',
+                                    type: 'line',
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#DD3300'
+                                        }
+                                    },
+                                    data: memtotal,
+                                    markLine: {
+                                        symbol: 'none',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#DD3300',
+                                                label: {
+                                                    show: true
+                                                }
+                                            }
+                                        },
+                                        data: [{
+                                            type: 'average',
+                                            name: '平均值'
+                                        }]
+                                    }
+                                }, {
+                                    name: 'active MB',
+                                    type: 'line',
+                                    itemStyle: {
+                                        normal: {
+                                            color: '#226699'
+                                        }
+                                    },
+                                    data: active,
+                                    markLine: {
+                                        symbol: 'none',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#226699',
+                                                label: {
+                                                    show: true
+                                                }
+                                            }
+                                        },
+                                        data: [{
+                                            type: 'average',
+                                            name: '平均值'
+                                        }]
+                                    }
+                                }]
+                            };
+
+                            var NET = {
+                                backgroundColor: "#F2F8FF",
+                                title: {
+                                    top: '15',
+                                    x: 'center',
+                                    text: script + '-网络带宽占用情况'
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        animation: false
+                                    }
+                                },
+                                legend: {
+                                    top: '45',
+                                    x: 'center',
+                                    data: ['Total-Read KB/s', 'Total-Write KB/s']
+                                },
+                                grid: {
+                                    top: '20%',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: '10%',
+                                    containLabel: true
+                                },
+                                toolbox: {
+                                    show: true,
+                                    x: '80%',
+                                    y: '5%',
+                                    feature: {
+                                        saveAsImage: {
+                                            pixelRatio: 2
+                                        },
+                                        dataZoom: {
+                                            show: true,
+                                            title: {
+                                                dataZoom: '区域缩放',
+                                                dataZoomReset: '区域缩放-后退'
+                                            }
+                                        },
+                                    }
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start: 0
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: xAxisdata
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                        name: 'Total-Read KB/s',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#DD3300'
+                                            }
+                                        },
+                                        type: 'line',
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: NetRead,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#DD3300',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    },
+                                    {
+                                        name: 'Total-Write KB/s',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#226699'
+                                            }
+                                        },
+                                        type: 'line',
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: NetWrite,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#226699',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    }
+                                ]
+                            };
+
+                            var DISK = {
+                                backgroundColor: "#F2F8FF",
+                                title: {
+                                    top: '15',
+                                    x: 'center',
+                                    text: script + '-磁盘IO及读写速率'
+                                },
+                                tooltip: {
+                                    trigger: 'axis',
+                                    axisPointer: {
+                                        animation: false
+                                    }
+                                },
+                                legend: {
+                                    top: '45',
+                                    x: 'center',
+                                    data: ['DiskRead KB/s', 'DiskWrite KB/s', 'IO/sec']
+                                },
+                                grid: {
+                                    top: '20%',
+                                    left: '10%',
+                                    right: '10%',
+                                    bottom: '10%',
+                                    containLabel: true
+                                },
+                                toolbox: {
+                                    show: true,
+                                    x: '80%',
+                                    y: '5%',
+                                    feature: {
+                                        saveAsImage: {
+                                            pixelRatio: 2
+                                        },
+                                        dataZoom: {
+                                            show: true,
+                                            title: {
+                                                dataZoom: '区域缩放',
+                                                dataZoomReset: '区域缩放-后退'
+                                            }
+                                        },
+                                    }
+                                },
+                                dataZoom: {
+                                    show: true,
+                                    start: 0
+                                },
+                                xAxis: {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: xAxisdata
+                                },
+                                yAxis: {
+                                    type: 'value'
+                                },
+                                series: [{
+                                        name: 'DiskRead KB/s',
+                                        type: 'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#DD3300'
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: DiskRead,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#DD3300',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    },
+                                    {
+                                        name: 'DiskWrite KB/s',
+                                        type: 'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: '#226699'
+                                            }
+                                        },
+                                        areaStyle: {
+                                            normal: {}
+                                        },
+                                        data: DiskWrite,
+                                        markLine: {
+                                            symbol: 'none',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: '#226699',
+                                                    label: {
+                                                        show: true
+                                                    }
+                                                }
+                                            },
+                                            data: [{
+                                                type: 'average',
+                                                name: '平均值'
+                                            }]
+                                        }
+                                    }
+                                ]
+                            };
+                            cpuChart.setOption(CPU);
+                            memChart.setOption(MEM);
+                            netChart.setOption(NET);
+                            diskChart.setOption(DISK);
+                        });
+                    }
+                });
+            }
+            ajaxGet();
+	    setInterval(ajaxGet, {{loopTime}});
+        </script>
+    </body>
+</html>

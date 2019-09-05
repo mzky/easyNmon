@@ -29,13 +29,14 @@ var (
 )
 
 func main() {
-	ip := ""
+	ip := "127.0.0.1"
 	netaddr, _ := net.InterfaceAddrs()
 	networkIp, _ := netaddr[1].(*net.IPNet)
 	if !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
 		ip = networkIp.IP.String()
 	}
 
+	debug := flag.Bool("debug", false, "debug模式")
 	version := flag.Bool("v", false, "version:显示版本号")
 	port := flag.String("p", "9999", "port:默认监听端口9999,自定义端口加 -p 端口号\n示例：./easyNmon -p 9999")
 	dir := flag.String("d", "report", "directory:指定生成报告的路径\n示例：./easyNmon -d /mnt/rep")
@@ -47,8 +48,12 @@ func main() {
 
 	ReportDir = *dir
 	NmonPath = *nmonpath
-	os.MkdirAll(ReportDir, 777)
-
+	syscall.Umask(0)
+	err := os.MkdirAll(ReportDir, os.ModePerm)
+	if err != nil {
+		fmt.Println("easyNmon启动权限不足!")
+		return
+	}
 	if *version {
 		fmt.Println("Version: " + Version)
 		fmt.Println("BuildTime: " + BuildTime)
@@ -63,14 +68,11 @@ func main() {
 	}
 
 	sysinfo := internal.SysInfo()
-	gin.SetMode(gin.ReleaseMode)
+	if !*debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.Default()
 
-	r.LoadHTMLFiles("web/index.html")
-	r.GET("/", func(c *gin.Context) {
-		c.Header("Content-Type", "text/html; charset=utf-8")
-		c.HTML(http.StatusOK, "index.html", gin.H{})
-	})
 	//重定向首页--解决静态文件与接口共存
 	// r.GET("/", func(c *gin.Context) {
 	// 	//c.Request.URL.Host = "http://127.0.0.1:8090"
@@ -81,16 +83,23 @@ func main() {
 	// })
 
 	//首页
+	r.LoadHTMLFiles("web/index.html")
+	r.GET("/", func(c *gin.Context) {
+		c.Header("Content-Type", "text/html; charset=utf-8")
+		c.HTML(http.StatusOK, "index.html", gin.H{})
+	})
 	r.Static("/js", "web/js")
 	// 浏览报告
 	r.StaticFS("/report", http.Dir(ReportDir))
 	//生成报告,用于实时更新报告
 	r.GET("/generate/:name/", func(c *gin.Context) {
 		name := c.Param("name")
-		internal.GetNmonReport(filepath.Join(ReportDir, name), name[:len(name)-14])
 		c.JSON(http.StatusOK, gin.H{
 			"message": "更新生成报告",
 		})
+		go func() {
+			internal.GetNmonReport(filepath.Join(ReportDir, name), name[:len(name)-14])
+		}()
 	})
 	r.GET("/sysinfo", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -112,7 +121,7 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	name := c.DefaultQuery("n", "name")    // 取name值
 	timeStr := c.DefaultQuery("t", "30")   // 取执行时长,单位分钟
 	frequency := c.DefaultQuery("f", "30") //频率，多少秒取一次
-	fileName := name + time.Now().Format("20060102150405")
+	fileName := strings.Join([]string{name, time.Now().Format("20060102150405")}, "")
 
 	t, _ := strconv.Atoi(timeStr)
 	f, _ := strconv.Atoi(frequency)
@@ -124,28 +133,32 @@ func start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	}
 	go func() {
 		fp := filepath.Join(ReportDir, fileName)
-		os.MkdirAll(fp, 777)
+		os.MkdirAll(fp, os.ModePerm)
 
 		buf, err := ioutil.ReadFile("web/chart/index.html")
 		if err != nil {
 			fmt.Println(err)
 		}
 		content := string(buf)
-		newContent := strings.ReplaceAll(content, "{{loopTime}}", frequency+"000")
+		newContent := strings.ReplaceAll(content, "{{loopTime}}", strings.Join([]string{frequency, "000"}, ""))
 
 		//重新写入
 		ioutil.WriteFile(filepath.Join(fp, "index.html"), []byte(newContent), 0)
 
 		exec.Command("cp", "-f", "web/js/echarts.min.js", fp).Run()
 		//	exec.Command("cp", "-f", "web/chart/index.html", fp).Run()
-		exec.Command("/bin/bash", "-c", NmonPath+" -f -t -s "+frequency+" -c "+strconv.Itoa(t*60/f)+" -m "+fp+" -F "+name).Run()
+		exec.Command("/bin/bash", "-c", strings.Join([]string{NmonPath, "-f -t -s", frequency, "-c", strconv.Itoa(t * 60 / f), "-m", fp, "-F", name}, " ")).Run()
+		os.Chmod(filepath.Join(fp, "index.html"), os.ModePerm)
+		os.Chmod(filepath.Join(fp, "echarts.min.js"), os.ModePerm)
+		os.Chmod(filepath.Join(fp, name), os.ModePerm)
+
 		time.Sleep(time.Second * 2)
 		internal.GetNmonReport(fp, name)
 		time.Sleep(time.Second * time.Duration(t*60+2))
 		internal.GetNmonReport(fp, name)
 	}()
 	c.JSON(http.StatusOK, gin.H{
-		"message": string("已执行" + name + "场景，监控时长" + timeStr + "分钟，频率为" + frequency + "秒！"),
+		"message": strings.Join([]string{"已执行", name, "场景，监控时长", timeStr, "分钟，频率为", frequency, "秒！"}, ""),
 	})
 }
 
