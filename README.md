@@ -27,9 +27,10 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 ### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
 
 
+
 ## 扩展工具
 
-批量部署及监控：https://gitee.com/goodhal/ezNmon-Manager
+[goodhal]的批量部署及监控服务：https://gitee.com/goodhal/ezNmon-Manager
 
 
 ##
