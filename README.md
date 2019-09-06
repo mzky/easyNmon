@@ -27,6 +27,11 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 ### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
 
 
+## 扩展工具
+
+批量部署及监控：https://gitee.com/goodhal/ezNmon-Manager
+
+
 ##
 ## 更新日志：
 
@@ -43,11 +48,6 @@ go的web框架gin：https://github.com/gin-gonic/gin
 图表插件echarts：http://echarts.baidu.com/
 
 前端amazeui：http://amazeui.org
-
-
-## 第三方工具
-
-批量部署及监控：https://gitee.com/goodhal/ezNmon-Manager
 
 
 ## 其它
