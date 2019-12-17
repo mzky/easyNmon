@@ -64,3 +64,10 @@ https://github.com/mzky/jmeter5.x-cn-report-template
 
 https://github.com/mzky/mesro
 
+
+## FAQ
+1、无法创建报告文件（html）
+查看是否权限正常，非root用户可以将程序防止当前用户的目录下，例如/home/user
+2、无法创建data文件（不显示图表）
+查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在群共享文件夹里
+
