@@ -72,5 +72,5 @@ https://github.com/mzky/mesro
 
 2、无法创建data文件（不显示图表）
 
-查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在群共享文件夹里
+查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在QQ群共享文件夹里
 
