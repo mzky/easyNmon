@@ -68,7 +68,7 @@ https://github.com/mzky/mesro
 ## FAQ
 1、无法创建报告文件（html）
 
-查看是否权限正常，非root用户可以将程序防止当前用户的目录下，例如/home/user
+查看是否权限正常，非root用户可以将程序放在当前用户的目录下，例如/home/user
 
 2、无法创建data文件（不显示图表）
 
