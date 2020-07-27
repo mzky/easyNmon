@@ -40,11 +40,11 @@ https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 #### 注意：默认nmon支持CentOS6~7，Ubuntu和SUSE等版本需要-np参数指定对应的版本
 
-## 感谢：
+## 巨人肩膀：
 
 nmon：http://nmon.sourceforge.net/
 
-go的web框架gin：https://github.com/gin-gonic/gin
+web框架gin：https://github.com/gin-gonic/gin
 
 图表插件echarts：http://echarts.baidu.com/
 
@@ -58,11 +58,6 @@ https://github.com/mzky/jmeter4.x-cn-report-template
 
 https://github.com/mzky/jmeter5.x-cn-report-template
 
-
-#### 因需求改动过大，并且不再使用Nmon作为采集工具，另开一个分支项目
-新项目将支持mysql、pgsql、tomcat、redis、Nginx等监控
-
-https://github.com/mzky/mesro
 
 
 ## FAQ
