@@ -11,7 +11,7 @@
 ##
 ## 操作说明：
 
-https://www.jianshu.com/p/c7c36ba14d3e
+http://mzky.cc/post/9.html
 
 ##
 ## 执行文件下载：（以下执行文件不包含源码）
