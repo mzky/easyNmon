@@ -51,14 +51,6 @@ web框架gin：https://github.com/gin-gonic/gin
 前端amazeui：http://amazeui.org
 
 
-## 其它
-#### jmeter4.x/5.x的html报告汉化模版：
-
-https://github.com/mzky/jmeter4.x-cn-report-template
-
-https://github.com/mzky/jmeter5.x-cn-report-template
-
-
 
 ## FAQ
 1、无法创建报告文件（html）
