@@ -11,7 +11,7 @@
 ##
 ## 操作说明：
 
-http://mzky.cc/post/9.html
+https://www.jianshu.com/p/c7c36ba14d3e
 
 ##
 ## 执行文件下载：（以下执行文件不包含源码）
@@ -49,6 +49,14 @@ web框架gin：https://github.com/gin-gonic/gin
 图表插件echarts：http://echarts.baidu.com/
 
 前端amazeui：http://amazeui.org
+
+
+## 其它
+#### jmeter4.x/5.x的html报告汉化模版：
+
+https://github.com/mzky/jmeter4.x-cn-report-template
+
+https://github.com/mzky/jmeter5.x-cn-report-template
 
 
 
