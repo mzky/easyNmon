@@ -32,6 +32,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 goodhal的批量部署及监控服务：https://gitee.com/goodhal/ezNmon-Manager
 
+jmeter优化版：https://github.com/mzky/Jmeter-Extension
 
 ##
 ## 更新日志：
