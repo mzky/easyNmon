@@ -6,27 +6,33 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/bingoohuang/golog/pkg/ginlogrus"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func Router() {
-	common.R = gin.Default()
-	common.R.Use(ginlogrus.Logger(nil, true), Cors(), gin.Recovery())
+func InitRouter() {
+	f := common.F
+	f.R = gin.Default()
+	f.R.Use(ginlogrus.Logger(nil, true), Cors(), gin.Recovery())
 	//管理页面
-	common.R.GET("/", controllers.ShowIndex)
+	f.R.GET("/", controllers.ShowIndex)
 	//common.R.GET("/web", gin.WrapH(staticHandler()))
-	common.R.StaticFS("/report", http.Dir(common.ReportDir))
+	f.R.StaticFS("/report", http.Dir(f.ReportDir))
 	//接口
-	common.R.GET("/generate/:name/", controllers.Generate)
-	common.R.GET("/sysInfo", controllers.GetSystemInfo)
-	common.R.GET("/start", controllers.Start)
-	common.R.GET("/close", controllers.Close)
-	common.R.GET("/stop", controllers.Stop)
+	f.R.GET("/generate/:name/", controllers.Generate)
+	f.R.GET("/sysInfo", controllers.GetSystemInfo)
+	f.R.GET("/start", controllers.Start)
+	f.R.GET("/close", controllers.Close)
+	f.R.GET("/stop", controllers.Stop)
+
+	f.R.Run(":" + *f.Port) // listen
+	logrus.Errorf("Check whether port %s is occupied!", *f.Port)
 }
 
-// 支持跨域访问
+// Cors 支持跨域访问
 func Cors() gin.HandlerFunc {
 	return cors.New(cors.Config{
 		AllowOrigins: []string{"*"},

@@ -1,63 +1,56 @@
 package controllers
 
 import (
-	"easyNmon/common"
 	"easyNmon/utils"
-	"fmt"
-	"io/ioutil"
-	"net"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	logger "go.uber.org/zap"
+	"github.com/sirupsen/logrus"
 )
 
 func Start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
 	name := c.DefaultQuery("n", "name")    // 取name值
 	timeStr := c.DefaultQuery("t", "30")   // 时长 单位分钟
 	frequency := c.DefaultQuery("f", "30") //频率，多少秒取一次
-	fileName := strings.Join([]string{name, time.Now().Format("20060102150405")}, "")
+	//fileName := strings.Join([]string{name, time.Now().Format("20060102150405")}, "")
 
-	go func() {
-		fullPath := filepath.Join(common.ReportDir, fileName)
-		os.MkdirAll(fullPath, os.ModePerm)
-
-		buf := common.Wfs.Files["/chart/index.html"].Data
-		content := string(buf)
-		newContent := strings.ReplaceAll(content, "{{loopTime}}", strings.Join([]string{frequency, "000"}, ""))
-
-		//重新写入
-		ioutil.WriteFile(filepath.Join(fullPath, "index.html"), []byte(newContent), 0)
-
-		utils.InitFile(common.Wfs, "/js/echarts.min.js", filepath.Join(fullPath, "echarts.min.js"))
-		//exec.Command("cp", "-f", "web/js/echarts.min.js", fullPath).Run()
-		os.Chmod(filepath.Join(fullPath, "index.html"), os.ModePerm)
-		os.Chmod(filepath.Join(fullPath, "echarts.min.js"), os.ModePerm)
-		os.Chmod(filepath.Join(fullPath, name), os.ModePerm)
-
-		t, _ := strconv.Atoi(timeStr)
-		f, _ := strconv.Atoi(frequency)
-
-		lib.Agent(fullPath, name, frequency, strconv.Itoa(t*60/f))
-
-		<-time.After(1 * time.Second)
-		utils.GetNmonReport(fullPath, name)
-
-	}()
-	logger.Info("已执行%s场景，监控时长%s分钟，频率为%s秒！", name, timeStr, frequency)
+	//go func() {
+	//	fullPath := filepath.Join(F.ReportDir, fileName)
+	//	os.MkdirAll(fullPath, os.ModePerm)
+	//
+	//	buf := common.Wfs.Files["/chart/index.html"].Data
+	//	content := string(buf)
+	//	newContent := strings.ReplaceAll(content, "{{loopTime}}", strings.Join([]string{frequency, "000"}, ""))
+	//
+	//	//重新写入
+	//	ioutil.WriteFile(filepath.Join(fullPath, "index.html"), []byte(newContent), 0)
+	//
+	//	utils.InitFile(common.Wfs, "/js/echarts.min.js", filepath.Join(fullPath, "echarts.min.js"))
+	//	//exec.Command("cp", "-f", "web/js/echarts.min.js", fullPath).Run()
+	//	os.Chmod(filepath.Join(fullPath, "index.html"), os.ModePerm)
+	//	os.Chmod(filepath.Join(fullPath, "echarts.min.js"), os.ModePerm)
+	//	os.Chmod(filepath.Join(fullPath, name), os.ModePerm)
+	//
+	//	t, _ := strconv.Atoi(timeStr)
+	//	f, _ := strconv.Atoi(frequency)
+	//
+	//	lib.Agent(fullPath, name, frequency, strconv.Itoa(t*60/f))
+	//
+	//	<-time.After(1 * time.Second)
+	//	utils.GetNmonReport(fullPath, name)
+	//}()
+	logrus.Info("已执行%s场景，监控时长%s分钟，频率为%s秒！", name, timeStr, frequency)
 	c.JSON(http.StatusOK, gin.H{
 		"message": strings.Join([]string{"已执行", name, "场景，监控时长", timeStr, "分钟，频率为", frequency, "秒！"}, ""),
 	})
 }
 
 func Close(c *gin.Context) { //结束自身进程
-	logger.Info("已结束EasyNmon服务!")
+	logrus.Info("已结束EasyNmon服务!")
 	c.JSON(http.StatusOK, gin.H{
 		"message": "已结束EasyNmon服务!",
 	})
@@ -69,7 +62,7 @@ func Close(c *gin.Context) { //结束自身进程
 }
 
 func Stop(c *gin.Context) {
-	logger.Info("已结束所有服务器监控任务!")
+	logrus.Info("已结束所有服务器监控任务!")
 	c.JSON(http.StatusOK, gin.H{
 		"message": "已结束所有服务器监控任务!",
 	})
@@ -81,10 +74,10 @@ func Stop(c *gin.Context) {
 
 //重新生成所有报告
 func getAllReport() {
-	list := getDirList(common.ReportDir)
-	for _, v := range list {
-		utils.GetNmonReport(filepath.Join(common.ReportDir, v), v[:len(v)-14])
-	}
+	//list := getDirList(common.ReportDir)
+	//for _, v := range list {
+	//	utils.GetNmonReport(filepath.Join(common.ReportDir, v), v[:len(v)-14])
+	//}
 }
 
 //获取文件夹列表
@@ -97,7 +90,7 @@ func getDirList(dirpath string) []string {
 			}
 			if f.IsDir() {
 				if path != dirpath {
-					dirList = append(dirList, path[len(common.ReportDir)+1:])
+					//dirList = append(dirList, path[len(common.ReportDir)+1:])
 					return nil
 				}
 			}
@@ -122,7 +115,7 @@ func killNmon() {
 
 func GetSystemInfo(c *gin.Context) {
 	sysInfo := utils.SysInfo()
-	logger.Info(sysInfo)
+	logrus.Info(sysInfo)
 	c.Header("Content-Type", "application/json; charset=utf-8")
 	c.JSON(http.StatusOK, gin.H{"message": sysInfo})
 }
@@ -140,28 +133,11 @@ func ShowIndex(c *gin.Context) {
 
 func Generate(c *gin.Context) {
 	name := c.Param("name")
-	logger.Info("更新%s报告", name)
+	logrus.Info("更新%s报告", name)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "更新生成报告",
 	})
 	go func() {
-		utils.GetNmonReport(filepath.Join(common.ReportDir, name), name[:len(name)-14])
+		//utils.GetNmonReport(filepath.Join(common.ReportDir, name), name[:len(name)-14])
 	}()
-}
-
-//获取对外访问的ip
-func GetExternalIP() string {
-	ip := "127.0.0.1"
-	netaddr, _ := net.InterfaceAddrs()
-	for key, _ := range netaddr {
-		networkIp, _ := netaddr[key].(*net.IPNet)
-		if !networkIp.IP.IsLoopback() && networkIp.IP.To4() != nil {
-			command := fmt.Sprintf("netstat -tunp|grep ssh |grep %s", networkIp.IP.String())
-			ip, _ := utils.Exec(command)
-			if ip != "" {
-				return networkIp.IP.String()
-			}
-		}
-	}
-	return ip
 }
