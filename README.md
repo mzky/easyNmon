@@ -62,3 +62,5 @@ web框架gin：https://github.com/gin-gonic/gin
 
 查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在QQ群共享文件夹里
 
+openAnolis8.4和openEuler22.03，需安装依赖包（CentOS8可能也需要）：yum install ncurses*
+
