@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"easyNmon/utils"
 	"net/http"
 	"net/http/httputil"
 	"os"
@@ -72,7 +71,7 @@ func Stop(c *gin.Context) {
 	}()
 }
 
-//重新生成所有报告
+// 重新生成所有报告
 func getAllReport() {
 	//list := getDirList(common.ReportDir)
 	//for _, v := range list {
@@ -80,7 +79,7 @@ func getAllReport() {
 	//}
 }
 
-//获取文件夹列表
+// 获取文件夹列表
 func getDirList(dirpath string) []string {
 	var dirList []string
 	filepath.Walk(dirpath,
@@ -99,7 +98,7 @@ func getDirList(dirpath string) []string {
 	return dirList
 }
 
-//杀掉所有nmon进程
+// 杀掉所有nmon进程
 func killNmon() {
 	//ret := exec.Command("pidof", common.NmonPath)
 	//buf, err := ret.Output()

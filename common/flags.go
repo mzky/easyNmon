@@ -1,7 +1,6 @@
 package common
 
 import (
-	"easyNmon/utils"
 	"flag"
 	"fmt"
 	"os"
@@ -46,8 +45,6 @@ func InitFlag() {
 	}
 
 	if *F.Analysis != "" {
-		path, name := filepath.Split(*F.Analysis)
-		utils.GetNmonReport(path, name)
 		os.Exit(0)
 	}
 
@@ -68,7 +65,7 @@ func printf(format string, a ...interface{}) {
 }
 
 func usage() {
-	F.IP = utils.GetExternalIP()
+	F.IP = GetExternalIP()
 	address := fmt.Sprintf("http://%s:%s", F.IP, *F.Port)
 	printf("Version: %s", Version)
 	printf("BuildTime: %s", Compile)

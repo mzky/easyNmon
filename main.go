@@ -2,11 +2,13 @@ package main
 
 import (
 	"easyNmon/common"
-	"easyNmon/routers"
 )
 
 func main() {
-	common.InitFlag()
-	common.InitLogs()
-	routers.InitRouter()
+	//common.InitFlag()
+	//common.InitLogs()
+	//routers.InitRouter()
+
+	common.Run(1, 10)
+	select {}
 }

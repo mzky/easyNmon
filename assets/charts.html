@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Njmon Charts</title>
+    <!-- 引入 ECharts -->
+    <script src="./js/echarts.min.js"></script>
+    <!-- 引入 jQuery -->
+    <script src="./js/jquery.min.js"></script>
+    <!-- 添加 CSS 样式 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+        }
+        #buttonsContainer {
+            display: flex;
+            overflow-x: auto;
+        }
+        .div-inline {
+            display: inline-block; /* 或者使用 display: inline; */
+            display: flex;
+        }
+        button {
+            background-color: #007cb5; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1px;
+            cursor: pointer;
+
+            /* border-radius: 5px; */
+            white-space: nowrap; /* 新增属性，防止文本换行 */
+            overflow: hidden; /* 新增属性，隐藏超出的部分 */
+            text-overflow: ellipsis; /* 新增属性，显示省略号 */
+        }
+        button:hover {
+            background-color: #7bcaff;
+        }
+        button.active {
+            background-color: #45a049; /* 更深的绿色 */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div id="buttonsContainer">
+</div>
+<div id="metricsChart" style="width: 100%;height:800px;"></div>
+<div id="sysInfo" style="text-align: center;">
+    <h2>System Information</h2>
+    <table id="sysInfoTable">
+        <thead>
+        <tr>
+            <th style="width: 20%;">Field</th>
+            <th style="width: 20%;">Section</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script>
+    // 示例 JSON 数据
+    const jsonData = {{.jsonData}};
+
+    // 创建 ECharts 实例
+    let myChart = null;
+
+    // 初始化图表
+    function initChart() {
+        myChart = echarts.init(document.getElementById('metricsChart'));
+    }
+
+    // 提取数据
+    function extractData(metricName, subMetricName) {
+        if (subMetricName == ""){
+            const data = jsonData.Occupy[metricName];
+            const labels = jsonData.Occupy.timestamp.UTC;
+            const series = [];
+
+            // 处理数组数据
+            if (Array.isArray(data)) {
+                return { labels, series: [{ name: metricName, data }] };
+            }
+
+            // 处理对象数据
+            for (let key in data) {
+                if (Array.isArray(data[key])) {
+                    series.push({ name: key, data: data[key] });
+                }
+            }
+
+            return { labels, series };
+        }
+        const data = jsonData.Occupy[metricName][subMetricName];
+        const labels = jsonData.Occupy.timestamp.UTC;
+        const series = [];
+
+        // 处理数组数据
+        if (Array.isArray(data)) {
+            return { labels, series: [{ name: subMetricName, data }] };
+        }
+
+        // 处理对象数据
+        for (let key in data) {
+            if (Array.isArray(data[key])) {
+                series.push({ name: key, data: data[key] });
+            }
+        }
+
+        return { labels, series };
+    }
+
+    // 显示图表
+    function showChart(metricName, subMetricName) {
+        const { labels, series } = extractData(metricName, subMetricName);
+        var titleName = beautifyLabel(`${metricName}`);
+        if (subMetricName != ""){
+            titleName =  `${metricName}-${subMetricName}`;
+        }
+        // cpu的折线图上限值固定为100
+        const yAxisMax = containsCpu(metricName) ? 100 : null;
+        const option = {
+            title: {
+                text: titleName,
+                left:'center',
+                top:'20'
+            },
+            grid: {
+                left: '50',
+                right: '160',
+                bottom: '60',
+                containLabel: true
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    magicType: { type: ['line', 'bar'] },
+                    restore: {},
+                    saveAsImage: {}
+                },
+                right:'180px'
+            },
+            dataZoom: [
+                {
+                    start: 0,
+                    end: 100
+                }
+            ],
+            legend: {
+                data: series.map(s => s.name),
+                type: 'scroll',// 支持翻页
+                orient: 'vertical',
+                right: 20,
+                top: 'center'
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: labels
+            },
+            yAxis:{
+                type: 'value',
+                max: yAxisMax
+            },
+            series: series.map(s => ({
+                name: s.name,
+                type: 'line',
+                data: s.data
+            }))
+        };
+
+        myChart.setOption(option);
+    }
+
+    // 初始化图表
+    $(document).ready(function() {
+        initChart();
+        // 动态生成按钮
+        const buttonContainer = $('#buttonsContainer');
+
+        const metrics = ['System_Info', 'cpu_total', 'cpus', 'proc_meminfo', 'disks', 'networks', 'filesystems'];
+        metrics.forEach(function(metric) {
+            const buttonsForMetric = $('<div class="div-inline">').appendTo(buttonContainer);
+
+            // 包含子项特殊处理 cpus, disks, networks, filesystems
+            if (['cpus', 'disks', 'networks', 'filesystems'].includes(metric)) {
+                Object.keys(jsonData.Occupy[metric]).forEach(subMetric => {
+                    subname=getLastDirectoryPath(subMetric);
+                    $('<button>').text(`${metric}-${subname}`).click(function() {
+                        clearActiveButtons();
+                        $(this).addClass('active');
+                        $('#metricsChart').show();
+                        $("#sysInfo").hide();
+                        showChart(metric, subMetric);
+                    }).appendTo(buttonsForMetric);
+                });
+            } else if (['System_Info'].includes(metric)) {
+                const label = beautifyLabel(metric);
+                $('<button>').text(label).click(function() {
+                    clearActiveButtons();
+                    $(this).addClass('active');
+                    $('#metricsChart').hide();
+                    $("#sysInfo").show();
+                    populateTable(jsonData);
+                }).appendTo(buttonsForMetric);
+            }else {
+                const label = beautifyLabel(metric);
+                $('<button>').text(label).click(function() {
+                    clearActiveButtons();
+                    $(this).addClass('active');
+                    $('#metricsChart').show();
+                    $("#sysInfo").hide();
+                    showChart(metric, "");
+                }).appendTo(buttonsForMetric);
+            }
+        });
+
+        // 默认显示第一个图表
+        $('#buttonsContainer button').first().click();
+        $('#buttonsContainer button').first().addClass('active');
+
+        // 清除按钮的活动状态
+        function clearActiveButtons() {
+            $('#buttonsContainer button').removeClass('active');
+        }
+    });
+
+    // 美化标签
+    function beautifyLabel(label) {
+        const labelMapping = {
+            cpu_total: 'Total CPU',
+            stat_counters: 'System Counters',
+            loadavg: 'Load Average',
+            proc_meminfo: 'Memory',
+            cpus: 'CPU',
+            disks: 'Disks',
+            networks: 'Networks',
+            filesystems: 'Filesystems',
+        };
+
+        return labelMapping[label] || label;
+    }
+
+    function getLastDirectoryPath(url) {
+        const urlParts = url.split('/');
+        const lastPart = urlParts.pop(); // 获取最后一个部分
+        return lastPart;
+    }
+
+    function containsCpu(str) {
+        const regex = /cpu/i; // i 表示不区分大小写
+        return regex.test(str);
+    }
+
+    // 动态生成表格内容
+    function populateTable(jsonData) {
+        const sysInfo = jsonData.SysInfo;
+        const tbody = $('#sysInfoTable tbody');
+
+        // 清空现有的表格内容
+        tbody.empty();
+
+        // 遍历 JSON 数据并生成表格行
+        for (let section in sysInfo) {
+            const sectionData = sysInfo[section];
+
+            // 生成表格行
+            for (let field in sectionData) {
+                const value = sectionData[field];
+                const row = $('<tr>');
+                row.append($('<td>').text(`${section}`));
+                row.append($('<td>').text(`${field}`));
+                row.append($('<td>').text(value));
+
+                // 将行添加到表格
+                tbody.append(row);
+            }
+        }
+    }
+
+</script>
+</body>
+</html>

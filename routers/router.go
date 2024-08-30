@@ -15,14 +15,14 @@ import (
 
 func InitRouter() {
 	f := common.F
-	f.R = gin.Default()
+	f.R = gin.New()
 	f.R.Use(ginlogrus.Logger(nil, true), Cors(), gin.Recovery())
 	//管理页面
 	f.R.GET("/", controllers.ShowIndex)
 	//common.R.GET("/web", gin.WrapH(staticHandler()))
 	f.R.StaticFS("/report", http.Dir(f.ReportDir))
 	//接口
-	f.R.GET("/generate/:name/", controllers.Generate)
+	f.R.Any("/generate/:name/", controllers.Generate)
 	f.R.GET("/sysInfo", controllers.GetSystemInfo)
 	f.R.GET("/start", controllers.Start)
 	f.R.GET("/close", controllers.Close)
