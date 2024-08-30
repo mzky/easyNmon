@@ -9,6 +9,6 @@ func main() {
 	//common.InitLogs()
 	//routers.InitRouter()
 
-	common.Run(1, 10)
+	common.Run(1, 100)
 	select {}
 }
