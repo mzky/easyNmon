@@ -1,3 +1,5 @@
+//go:build amd64
+
 package pkg
 
 import (
@@ -7,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-//go:embed njmon
+//go:embed amd64/njmon
 var njmon []byte
 
 var (
@@ -18,5 +20,6 @@ var (
 func init() {
 	if err := os.WriteFile(NjMon, njmon, 0755); err != nil {
 		fmt.Println("write file error:", err)
+		os.Exit(1)
 	}
 }
