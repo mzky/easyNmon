@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	github.com/bingoohuang/golog v0.0.0-20230413033319-0213e2c952ac
-	github.com/bingoohuang/statiq v0.2.1
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/mzky/utils v1.4.3
