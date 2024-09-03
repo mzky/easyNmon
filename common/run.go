@@ -16,7 +16,7 @@ import (
 
 func Run(t, c int) {
 	cmdOptions := cmd.Options{Buffered: false, Streaming: true}
-	envCmd := cmd.NewCmdOptions(cmdOptions, pkg.NjMon, "-n", "-s", strconv.Itoa(t), "-c", strconv.Itoa(c))
+	envCmd := cmd.NewCmdOptions(cmdOptions, pkg.Njmon, "-n", "-s", strconv.Itoa(t), "-c", strconv.Itoa(c))
 	ticker := time.NewTicker(time.Second)
 	envCmd.Start()
 	//go kill(pkg.NjMon, time.Second*time.Duration(t*c+2))

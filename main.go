@@ -5,9 +5,10 @@ import (
 )
 
 func main() {
-	//common.InitFlag()
-	//common.InitLogs()
-	//routers.InitRouter()
+	var f common.Flag
+	f.InitFlag()
+	f.InitLogs()
+	f.InitRouter()
 
 	common.Run(1, 100)
 	select {}

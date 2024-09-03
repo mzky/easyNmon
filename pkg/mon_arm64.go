@@ -13,13 +13,13 @@ import (
 var njmon []byte
 
 var (
-	Pwd, _ = os.Getwd()
-	NjMon  = filepath.Join(Pwd, "njmon")
+	pwd, _ = os.Getwd()
+	Njmon  = filepath.Join(pwd, "njmon")
 )
 
 func init() {
-	if err := os.WriteFile(NjMon, njmon, 0755); err != nil {
-		fmt.Println("write file error:", err)
+	if err := os.WriteFile(Njmon, njmon, 0755); err != nil {
+		fmt.Println("Write file error:", err)
 		os.Exit(1)
 	}
 }

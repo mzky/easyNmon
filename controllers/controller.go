@@ -1,20 +1,20 @@
 package controllers
 
 import (
+	"easyNmon/common"
+	"github.com/labstack/echo/v4"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-func Start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
-	name := c.DefaultQuery("n", "name")    // 取name值
-	timeStr := c.DefaultQuery("t", "30")   // 时长 单位分钟
-	frequency := c.DefaultQuery("f", "30") //频率，多少秒取一次
+func Start(c echo.Context) error { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
+	name := c.QueryParam("n")      // 取name值
+	timeStr := c.QueryParam("t")   // 时长 单位分钟
+	frequency := c.QueryParam("f") //频率，多少秒取一次
 	//fileName := strings.Join([]string{name, time.Now().Format("20060102150405")}, "")
 
 	//go func() {
@@ -43,32 +43,26 @@ func Start(c *gin.Context) { // 格式 ?n=name&t=time&f=60 参数均可为空 �
 	//	utils.GetNmonReport(fullPath, name)
 	//}()
 	logrus.Info("已执行%s场景，监控时长%s分钟，频率为%s秒！", name, timeStr, frequency)
-	c.JSON(http.StatusOK, gin.H{
-		"message": strings.Join([]string{"已执行", name, "场景，监控时长", timeStr, "分钟，频率为", frequency, "秒！"}, ""),
-	})
+	return c.JSON(http.StatusOK, common.Rsp{Message: strings.Join([]string{"已执行", name, "场景，监控时长", timeStr, "分钟，频率为", frequency, "秒！"}, "")})
 }
 
-func Close(c *gin.Context) { //结束自身进程
+func Close(c echo.Context) error { //结束自身进程
 	logrus.Info("已结束EasyNmon服务!")
-	c.JSON(http.StatusOK, gin.H{
-		"message": "已结束EasyNmon服务!",
-	})
 	go func() {
 		getAllReport()
 		killNmon()
 		os.Exit(0)
 	}()
+	return c.JSON(http.StatusOK, common.Rsp{Message: "已结束EasyNmon服务!"})
 }
 
-func Stop(c *gin.Context) {
+func Stop(c echo.Context) error {
 	logrus.Info("已结束所有服务器监控任务!")
-	c.JSON(http.StatusOK, gin.H{
-		"message": "已结束所有服务器监控任务!",
-	})
 	go func() {
 		getAllReport()
 		killNmon()
 	}()
+	return c.JSON(http.StatusOK, common.Rsp{Message: "已结束所有服务器监控任务!"})
 }
 
 // 重新生成所有报告
@@ -100,7 +94,7 @@ func getDirList(dirpath string) []string {
 
 // 杀掉所有nmon进程
 func killNmon() {
-	//ret := exec.Command("pidof", common.NmonPath)
+	//ret := exec.Command("pidof", common.NjmonPath)
 	//buf, err := ret.Output()
 	//if err == nil {
 	//	pids := strings.Split(strings.ReplaceAll(string(buf), "\n", ""), " ")
@@ -112,31 +106,16 @@ func killNmon() {
 
 }
 
-func GetSystemInfo(c *gin.Context) {
-	sysInfo := utils.SysInfo()
-	logrus.Info(sysInfo)
-	c.Header("Content-Type", "application/json; charset=utf-8")
-	c.JSON(http.StatusOK, gin.H{"message": sysInfo})
+func GetSystemInfo(c echo.Context) error {
+	return c.JSON(http.StatusOK, common.Rsp{Message: sysInfo})
 }
 
-func ShowIndex(c *gin.Context) {
-	director := func(req *http.Request) {
-		req.URL.Scheme = "http"
-		req.URL.Path = "/web"
-		req.URL.Host = c.Request.Host
-		req.Host = c.Request.Host
-	}
-	proxy := &httputil.ReverseProxy{Director: director}
-	proxy.ServeHTTP(c.Writer, c.Request)
+func ShowIndex(c echo.Context) error {
+	return c.Redirect(http.StatusMovedPermanently, common.WebRoot)
 }
 
-func Generate(c *gin.Context) {
+func Generate(c echo.Context) error {
 	name := c.Param("name")
 	logrus.Info("更新%s报告", name)
-	c.JSON(http.StatusOK, gin.H{
-		"message": "更新生成报告",
-	})
-	go func() {
-		//utils.GetNmonReport(filepath.Join(common.ReportDir, name), name[:len(name)-14])
-	}()
+	return c.JSON(http.StatusOK, common.Rsp{Message: "更新生成报告"})
 }

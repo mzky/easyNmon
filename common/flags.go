@@ -3,58 +3,51 @@ package common
 import (
 	"flag"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"syscall"
 
-	"github.com/sirupsen/logrus"
-
-	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
-
-var F Flag
 
 type Flag struct {
 	IP        string
-	Debug     *bool
-	V         *bool
-	Port      *string
-	Dir       *string
-	Analysis  *string
-	Host      *string
-	NmonPath  *string
-	R         *gin.Engine
+	Debug     bool
+	V         bool
+	Port      string
+	Dir       string
+	Analysis  string
+	Host      string
+	NjmonPath string
+	R         echo.Echo
 	ReportDir string
 }
 
-func InitFlag() {
-	F.Debug = flag.Bool("debug", false, "Debug mode")
-	F.V = flag.Bool("v", false, "\nShow version")
-	F.Port = flag.String("p", "9999", "Web service port")
-	F.Dir = flag.String("d", "report", "Default reporting directory")
-	F.Analysis = flag.String("a", "", "Specify the Nmon report file to generate HTML")
-	F.NmonPath = flag.String("n", "nmon/nmon", "Specify the nmon version for the platform")
+func (f *Flag) InitFlag() {
+	f.Debug = *flag.Bool("debug", false, "Debug mode")
+	f.V = *flag.Bool("v", false, "\nShow version")
+	f.Port = *flag.String("p", "9999", "Web service port")
+	f.Dir = *flag.String("d", "report", "Default reporting directory")
+	f.Analysis = *flag.String("a", "", "Specify the Nmon report file to generate HTML")
+	f.NjmonPath = *flag.String("n", "njmon", "Specify the njmon version for the platform")
 
-	flag.Usage = usage
+	flag.Usage = f.usage
 	flag.Parse()
 
-	if *F.V {
+	if f.V {
 		fmt.Println("Version: " + Version)
 		fmt.Println("Compile: " + Compile)
 		os.Exit(0)
 	}
 
-	if *F.Analysis != "" {
+	if f.Analysis != "" {
 		os.Exit(0)
 	}
 
-	if !*F.Debug {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
-	F.ReportDir, _ = filepath.Abs(*F.Dir) //绝对路径*dir
+	f.ReportDir, _ = filepath.Abs(f.Dir) //绝对路径*dir
 	syscall.Umask(0)
-	if os.MkdirAll(F.ReportDir, os.ModePerm) != nil {
+	if os.MkdirAll(f.ReportDir, os.ModePerm) != nil {
 		logrus.Error("EasyNmon does not have permission or the directory does not have permission to write!")
 		os.Exit(0)
 	}
@@ -64,9 +57,9 @@ func printf(format string, a ...interface{}) {
 	fmt.Printf(format+"\n", a...)
 }
 
-func usage() {
-	F.IP = GetExternalIP()
-	address := fmt.Sprintf("http://%s:%s", F.IP, *F.Port)
+func (f *Flag) usage() {
+	f.IP = GetExternalIP()
+	address := fmt.Sprintf("http://%s:%s", f.IP, f.Port)
 	printf("Version: %s", Version)
 	printf("BuildTime: %s", Compile)
 	printf("Usage: %s [OPTIONS] args", os.Args[0])

@@ -1,25 +1,23 @@
-package routers
+package common
 
 import (
-	"easyNmon/common"
 	"easyNmon/controllers"
+	"easyNmon/pkg"
+	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 	"time"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/bingoohuang/golog/pkg/ginlogrus"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
-func InitRouter() {
-	f := common.F
-	f.R = gin.New()
-	f.R.Use(ginlogrus.Logger(nil, true), Cors(), gin.Recovery())
+func (f *Flag) InitRouter() {
+	f.R.Use(middleware.Recover())
 	//管理页面
 	f.R.GET("/", controllers.ShowIndex)
-	//common.R.GET("/web", gin.WrapH(staticHandler()))
+	f.R.StaticFS(WebRoot, pkg.StaticFS())
 	f.R.StaticFS("/report", http.Dir(f.ReportDir))
 	//接口
 	f.R.Any("/generate/:name/", controllers.Generate)

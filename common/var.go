@@ -161,3 +161,34 @@ type Uptime struct {
 	Minutes int64 `json:"minutes"`
 	Users   int64 `json:"users"`
 }
+
+// Occupy 定义一个输出的结构体来匹配JSON数据
+type Occupy struct {
+	CPUTotal struct {
+		User   []float64 `json:"user"`
+		Sys    []float64 `json:"sys"`
+		Iowait []float64 `json:"iowait"`
+	} `json:"cpu_total"`
+	ProcMeminfo struct {
+		MemFree  []float64 `json:"MemFree"`
+		Active   []float64 `json:"Active"`
+		MemTotal []float64 `json:"MemTotal"`
+	} `json:"proc_meminfo"`
+	Networks map[string]struct {
+		Ibytes []float64 `json:"ibytes"`
+		Obytes []float64 `json:"obytes"`
+	} `json:"networks"`
+	Disks map[string]struct {
+		Reads  []float64 `json:"reads"`
+		Writes []float64 `json:"writes"`
+	} `json:"disks"`
+	Name string `json:"name"`
+}
+
+type Rsp struct {
+	Code    int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+var WebRoot = "/web"
