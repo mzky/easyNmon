@@ -3,6 +3,7 @@ package common
 import (
 	"flag"
 	"fmt"
+	"github.com/arsham/figurine/figurine"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -22,15 +23,18 @@ type Flag struct {
 	NjmonPath string
 	R         echo.Echo
 	ReportDir string
+	Address   string
 }
 
 func (f *Flag) InitFlag() {
-	f.Debug = *flag.Bool("debug", false, "Debug mode")
-	f.V = *flag.Bool("v", false, "\nShow version")
-	f.Port = *flag.String("p", "9999", "Web service port")
-	f.Dir = *flag.String("d", "report", "Default reporting directory")
-	f.Analysis = *flag.String("a", "", "Specify the Nmon report file to generate HTML")
-	f.NjmonPath = *flag.String("n", "njmon", "Specify the njmon version for the platform")
+	flag.BoolVar(&f.Debug, "debug", false, "Debug mode")
+	flag.BoolVar(&f.V, "v", false, "\nShow version")
+	flag.StringVar(&f.Port, "p", "9999", "Web service port")
+	flag.StringVar(&f.Dir, "d", "report", "Default reporting directory")
+	flag.StringVar(&f.Analysis, "a", "", "Specify the Nmon report file to generate HTML")
+	flag.StringVar(&f.NjmonPath, "n", "njmon", "Specify the njmon version for the platform")
+
+	figurine.Write(os.Stdout, "EasyNjmon", "Doom.flf")
 
 	flag.Usage = f.usage
 	flag.Parse()
@@ -45,6 +49,10 @@ func (f *Flag) InitFlag() {
 		os.Exit(0)
 	}
 
+	f.IP = GetExternalIP()
+	f.Address = fmt.Sprintf("Management Page: http://%s:%s", f.IP, f.Port)
+	fmt.Println(f.Address)
+
 	f.ReportDir, _ = filepath.Abs(f.Dir) //绝对路径*dir
 	syscall.Umask(0)
 	if os.MkdirAll(f.ReportDir, os.ModePerm) != nil {
@@ -58,8 +66,6 @@ func printf(format string, a ...interface{}) {
 }
 
 func (f *Flag) usage() {
-	f.IP = GetExternalIP()
-	address := fmt.Sprintf("http://%s:%s", f.IP, f.Port)
 	printf("Version: %s", Version)
 	printf("BuildTime: %s", Compile)
 	printf("Usage: %s [OPTIONS] args", os.Args[0])
@@ -72,18 +78,18 @@ func (f *Flag) usage() {
 	printf("      %s -d /mnt/reports", os.Args[0])
 	printf("      %s -n ./nmon/nmon_centos7", os.Args[0])
 	printf("   Web Management Page")
-	printf("      %s", address)
+	printf("      %s", f.Address)
 	printf("   Web Interface [GET]")
 	printf("      Start monitoring")
-	printf("         %s/start?n=name&t=30&f=30", address)
+	printf("         %s/start?n=name&t=30&f=30", f.Address)
 	printf("         [n] The name of the file to generate the report")
 	printf("         [t] The monitoring time (Unit: minute)")
 	printf("         [f] This is the monitoring frequency (Unit: seconds)")
 	printf("      Stop monitoring")
-	printf("         %s/stop", address)
+	printf("         %s/stop", f.Address)
 	printf("      View Reports")
-	printf("         %s/report", address)
+	printf("         %s/report", f.Address)
 	printf("      Close EasyNmon")
-	printf("         %s/close", address)
+	printf("         %s/close", f.Address)
 
 }

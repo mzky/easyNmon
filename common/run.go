@@ -4,10 +4,7 @@ import (
 	"easyNmon/pkg"
 	"encoding/json"
 	"fmt"
-	"os/exec"
 	"strconv"
-	"strings"
-	"syscall"
 	"time"
 
 	"github.com/mzky/utils/cmd"
@@ -37,15 +34,5 @@ func Run(t, c int) {
 			Handle(m.DB.Save("data.json"))
 			fmt.Println(m.GetKeys("SysInfo"))
 		}
-	}
-}
-
-func kill(name string, d time.Duration) {
-	<-time.After(d)
-	ret := exec.Command("pidof", name)
-	buf, _ := ret.Output()
-	for _, v := range strings.Fields(string(buf)) {
-		pid, _ := strconv.Atoi(v)
-		fmt.Println("kill", v, name, syscall.Kill(pid, syscall.SIGKILL) == nil)
 	}
 }

@@ -191,4 +191,12 @@ type Rsp struct {
 	Data    interface{} `json:"data"`
 }
 
+func RspOK(message string, data interface{}) *Rsp {
+	return &Rsp{
+		Code:    200,
+		Message: message,
+		Data:    data,
+	}
+}
+
 var WebRoot = "/web"

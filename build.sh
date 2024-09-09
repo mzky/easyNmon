@@ -10,6 +10,6 @@ const (
 )
 EOF
 go mod tidy
-go build -ldflags "-w -s" -o easyNmon_amd64 main.go
-CGO_ENABLED=0 GOOS=linux GOARCH=arm64 GOARM=7 go build -ldflags "-w -s" -o easyNmon_arm64 main.go
-
+go build -ldflags "-w -s" -o easyNmon-x86_64 main.go
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 GOARM=7 go build -ldflags "-w -s" -o easyNmon-aarch64 main.go
+upx easyNmon-x86_64 easyNmon-aarch64

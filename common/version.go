@@ -1,6 +1,6 @@
 package common
 
 const (
-	Version = "1e2718e25e23c3a50fcf4452260ae26ca80260ca @2024-09-02 18:10:15 +0800"
-	Compile = "2024-09-02 18:13:39 by go version go1.21.5 linux/amd64"
+	Version = "fcc8bc00941bd561d19024b3541c04d444cab500 @2024-09-03 15:55:35 +0800"
+	Compile = "2024-09-09 13:19:00 by go version go1.21.5 linux/amd64"
 )

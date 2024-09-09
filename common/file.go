@@ -1,7 +1,6 @@
 package common
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,7 +8,7 @@ import (
 
 // GetFiles 获取指定目录下的所有文件,包含子目录下的文件
 func GetFiles(dirPth string, name string) (fileName string) {
-	dir, err := ioutil.ReadDir(dirPth)
+	dir, err := os.ReadDir(dirPth)
 	if err != nil {
 		return ""
 	}

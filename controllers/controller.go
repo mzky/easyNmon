@@ -2,13 +2,18 @@ package controllers
 
 import (
 	"easyNmon/common"
+	"easyNmon/pkg"
+	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
-
-	"github.com/sirupsen/logrus"
+	"syscall"
+	"time"
 )
 
 func Start(c echo.Context) error { // 格式 ?n=name&t=time&f=60 参数均可为空 默认30分钟
@@ -42,27 +47,29 @@ func Start(c echo.Context) error { // 格式 ?n=name&t=time&f=60 参数均可为
 	//	<-time.After(1 * time.Second)
 	//	utils.GetNmonReport(fullPath, name)
 	//}()
-	logrus.Info("已执行%s场景，监控时长%s分钟，频率为%s秒！", name, timeStr, frequency)
-	return c.JSON(http.StatusOK, common.Rsp{Message: strings.Join([]string{"已执行", name, "场景，监控时长", timeStr, "分钟，频率为", frequency, "秒！"}, "")})
+
+	ms := fmt.Sprintf("已执行%s场景，监控时长%s分钟，频率为%s秒！", name, timeStr, frequency)
+	logrus.Info(ms)
+	return c.JSON(http.StatusOK, common.RspOK(ms, ""))
 }
 
 func Close(c echo.Context) error { //结束自身进程
 	logrus.Info("已结束EasyNmon服务!")
 	go func() {
 		getAllReport()
-		killNmon()
+		killNjmon()
 		os.Exit(0)
 	}()
-	return c.JSON(http.StatusOK, common.Rsp{Message: "已结束EasyNmon服务!"})
+	return c.JSON(http.StatusOK, common.RspOK("已结束EasyNmon服务!", ""))
 }
 
 func Stop(c echo.Context) error {
 	logrus.Info("已结束所有服务器监控任务!")
 	go func() {
 		getAllReport()
-		killNmon()
+		killNjmon()
 	}()
-	return c.JSON(http.StatusOK, common.Rsp{Message: "已结束所有服务器监控任务!"})
+	return c.JSON(http.StatusOK, common.RspOK("已结束所有服务器监控任务!", ""))
 }
 
 // 重新生成所有报告
@@ -92,30 +99,23 @@ func getDirList(dirpath string) []string {
 	return dirList
 }
 
-// 杀掉所有nmon进程
-func killNmon() {
-	//ret := exec.Command("pidof", common.NjmonPath)
-	//buf, err := ret.Output()
-	//if err == nil {
-	//	pids := strings.Split(strings.ReplaceAll(string(buf), "\n", ""), " ")
-	//	for _, value := range pids {
-	//		pid, _ := strconv.Atoi(value)
-	//		syscall.Kill(pid, syscall.SIGKILL)
-	//	}
-	//}
-
+// 杀掉所有njmon进程
+func killNjmon() {
+	<-time.After(time.Second)
+	ret := exec.Command("pidof", pkg.Njmon)
+	buf, _ := ret.Output()
+	for _, v := range strings.Fields(string(buf)) {
+		pid, _ := strconv.Atoi(v)
+		logrus.Warnln("kill", v, pkg.Njmon, syscall.Kill(pid, syscall.SIGKILL) == nil)
+	}
 }
 
 func GetSystemInfo(c echo.Context) error {
-	return c.JSON(http.StatusOK, common.Rsp{Message: sysInfo})
-}
-
-func ShowIndex(c echo.Context) error {
-	return c.Redirect(http.StatusMovedPermanently, common.WebRoot)
+	return c.JSON(http.StatusOK, common.RspOK(common.SysInfo(), ""))
 }
 
 func Generate(c echo.Context) error {
 	name := c.Param("name")
 	logrus.Info("更新%s报告", name)
-	return c.JSON(http.StatusOK, common.Rsp{Message: "更新生成报告"})
+	return c.JSON(http.StatusOK, common.RspOK("更新生成报告", ""))
 }
