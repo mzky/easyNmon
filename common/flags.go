@@ -14,7 +14,7 @@ import (
 type Flag struct {
 	IP        string
 	Debug     bool
-	V         bool
+	Version   bool
 	Port      string
 	Dir       string
 	Analysis  string
@@ -27,17 +27,17 @@ type Flag struct {
 
 func (f *Flag) InitFlag() {
 	flag.BoolVar(&f.Debug, "debug", false, "Debug mode")
-	flag.BoolVar(&f.V, "v", false, "Show version")
+	flag.BoolVar(&f.Version, "v", false, "Show version")
 	flag.StringVar(&f.Port, "p", "9999", "Service port")
 	flag.StringVar(&f.Dir, "d", "report", "Default reporting directory")
 	flag.StringVar(&f.NjmonPath, "n", "njmon", "Specify the njmon version for the platform")
-	f.IP = GetExternalIP()
+	f.GetExternalIP()
 	f.Address = fmt.Sprintf("http://%s:%s", f.IP, f.Port)
 	color.Gray.Print(art)
 	flag.Usage = f.usage
 	flag.Parse()
 
-	if f.V {
+	if f.Version {
 		fmt.Println("Version: " + Version)
 		fmt.Println("Compile: " + Compile)
 		os.Exit(0)
