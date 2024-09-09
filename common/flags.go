@@ -33,11 +33,9 @@ func (f *Flag) InitFlag() {
 	flag.StringVar(&f.NjmonPath, "n", "njmon", "Specify the njmon version for the platform")
 	f.IP = GetExternalIP()
 	f.Address = fmt.Sprintf("http://%s:%s", f.IP, f.Port)
-	//figurine.Write(os.Stdout, "EasyNjmon", "Doom.flf")
-
+	fmt.Print(art)
 	flag.Usage = f.usage
 	flag.Parse()
-	fmt.Print(art)
 
 	if f.V {
 		fmt.Println("Version: " + Version)
@@ -54,7 +52,7 @@ func (f *Flag) InitFlag() {
 	f.ReportDir, _ = filepath.Abs(f.Dir) //绝对路径*dir
 	syscall.Umask(0)
 	if os.MkdirAll(f.ReportDir, os.ModePerm) != nil {
-		logrus.Error("EasyNmon does not have permission or the directory does not have permission to write!")
+		logrus.Error("EasyNjmon does not have permission or the directory does not have permission to write!")
 		os.Exit(0)
 	}
 }
@@ -73,7 +71,7 @@ func (f *Flag) usage() {
 	printf("USAGES:")
 	printf("   Examples of parameters")
 	printf("      %s -d /mnt/reports", os.Args[0])
-	printf("      %s -n ./nmon/nmon_centos7", os.Args[0])
+	printf("      %s -n ./njmon", os.Args[0])
 	printf("   Management Page")
 	printf("      %s", f.Address)
 	printf("   API [GET]")

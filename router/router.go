@@ -20,18 +20,16 @@ func (f Flag) InitRouter() {
 	r.Use(echologrus.Logger(nil, true), middleware.Recover(), Cors())
 
 	r.GET("/report", controllers.Generate)
-	//接口
 	r.Any("/generate/:name/", controllers.Generate)
 	r.GET("/sysInfo", controllers.GetSystemInfo)
 	r.GET("/start", controllers.Start)
 	r.GET("/close", controllers.Close)
 	r.GET("/stop", controllers.Stop)
-	//管理页面
+
 	r.StaticFS(common.WebRoot, pkg.StaticFS())
 	r.GET("/", func(c echo.Context) error { return c.Redirect(http.StatusMovedPermanently, common.WebRoot) })
 
-	go r.Start(":" + f.Port)
-	// r.Logger.Fatal(r.Start(":" + f.Port)) // listen
+	r.Logger.Fatal(r.Start(":" + f.Port)) // listen
 }
 
 // Cors 支持跨域访问

@@ -1,6 +1,6 @@
 #!/bin/bash
-version=$(git log --date=iso --pretty=format:"%H @%cd" -1)
-compile="$(date '+%Y-%m-%d %H:%M:%S') by $(go version)"
+version=$(git log --date=iso --pretty=format:"%h@%cd" -1)
+compile="$(date '+%Y-%m-%d_%H:%M:%S') By $(go version|awk '{print $3}')"
 cat <<EOF | gofmt >common/version.go
 package common
 
