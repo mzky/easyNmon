@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/bingoohuang/golog v0.0.0-20240909041443-283abc3a5ce0
+	github.com/gookit/color v1.5.4
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/mzky/utils v1.4.3
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -25,6 +26,7 @@ require (
 	github.com/tklauser/numcpus v0.8.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
+	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
