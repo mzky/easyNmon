@@ -3,7 +3,6 @@ package common
 import (
 	"flag"
 	"fmt"
-	"github.com/arsham/figurine/figurine"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -28,16 +27,17 @@ type Flag struct {
 
 func (f *Flag) InitFlag() {
 	flag.BoolVar(&f.Debug, "debug", false, "Debug mode")
-	flag.BoolVar(&f.V, "v", false, "\nShow version")
-	flag.StringVar(&f.Port, "p", "9999", "Web service port")
+	flag.BoolVar(&f.V, "v", false, "Show version")
+	flag.StringVar(&f.Port, "p", "9999", "Service port")
 	flag.StringVar(&f.Dir, "d", "report", "Default reporting directory")
-	flag.StringVar(&f.Analysis, "a", "", "Specify the Nmon report file to generate HTML")
 	flag.StringVar(&f.NjmonPath, "n", "njmon", "Specify the njmon version for the platform")
-
-	figurine.Write(os.Stdout, "EasyNjmon", "Doom.flf")
+	f.IP = GetExternalIP()
+	f.Address = fmt.Sprintf("http://%s:%s", f.IP, f.Port)
+	//figurine.Write(os.Stdout, "EasyNjmon", "Doom.flf")
 
 	flag.Usage = f.usage
 	flag.Parse()
+	fmt.Print(art)
 
 	if f.V {
 		fmt.Println("Version: " + Version)
@@ -49,9 +49,7 @@ func (f *Flag) InitFlag() {
 		os.Exit(0)
 	}
 
-	f.IP = GetExternalIP()
-	f.Address = fmt.Sprintf("Management Page: http://%s:%s", f.IP, f.Port)
-	fmt.Println(f.Address)
+	fmt.Println("Management Page:", f.Address)
 
 	f.ReportDir, _ = filepath.Abs(f.Dir) //绝对路径*dir
 	syscall.Umask(0)
@@ -74,22 +72,33 @@ func (f *Flag) usage() {
 	printf("")
 	printf("USAGES:")
 	printf("   Examples of parameters")
-	printf("      %s -a ./report/testName", os.Args[0])
 	printf("      %s -d /mnt/reports", os.Args[0])
 	printf("      %s -n ./nmon/nmon_centos7", os.Args[0])
-	printf("   Web Management Page")
+	printf("   Management Page")
 	printf("      %s", f.Address)
-	printf("   Web Interface [GET]")
-	printf("      Start monitoring")
-	printf("         %s/start?n=name&t=30&f=30", f.Address)
-	printf("         [n] The name of the file to generate the report")
-	printf("         [t] The monitoring time (Unit: minute)")
-	printf("         [f] This is the monitoring frequency (Unit: seconds)")
-	printf("      Stop monitoring")
+	printf("   API [GET]")
+	printf("      Start Monitoring")
+	printf("         %s/start?n=name&t=time&f=frequency", f.Address)
+	printf("         [n] The [name] of the file to generate the report")
+	printf("         [t] Monitoring [time] (Unit: minute)")
+	printf("         [f] Monitoring [frequency] (Unit: seconds)")
+	printf("      Stop Monitoring")
 	printf("         %s/stop", f.Address)
 	printf("      View Reports")
 	printf("         %s/report", f.Address)
-	printf("      Close EasyNmon")
+	printf("      Close Self")
 	printf("         %s/close", f.Address)
 
 }
+
+const art = `-888888888---------------------------------88b------88------------------------------------------
+-88----------------------------------------888b-----88--88--------------------------------------
+-88----------------------------------------88'8b----88------------------------------------------
+-88aaaaaa--,adPPYba,-,adPPYba,-8b-------d8-88-'8b---88--88--,8dba,,adba,---,adPPYba,---abdPba,--
+-88""""""--""----'Y8-I8[----""-'8b-----d8'-88--'8b--88--88-88"--"88"--"8a-a8"-----"8a-88"---"8a-
+-88--------,adPPPP88--'"Y8ba,---'8b---d8'--88---'8b-88--88-88----88----88-8b-------d8-88-----88-
+-88--------88,---,88-aa----]8I---'8b,d8'---88----'8888--88-88----88----88-"8a,---,a8"-88-----88-
+-888888888-'"8bbP"Y8-'"YbbdP"'-----&88'----88-----'888--88-88----88----88--'"YbbdP"'--88-----88-
+-----------------------------------d8'-----------------,88--------------------------------------
+---------------------------------ad8'----------------888P"--------------------------------------
+`

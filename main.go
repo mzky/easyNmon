@@ -9,7 +9,7 @@ func main() {
 	var f common.Flag
 	f.InitFlag()
 	f.InitLogs()
-	router.InitRouter(f)
+	router.Flag(f).InitRouter()
 
 	common.Run(1, 100)
 	select {}

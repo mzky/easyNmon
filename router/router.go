@@ -10,9 +10,12 @@ import (
 	"net/http"
 )
 
-func InitRouter(f common.Flag) {
+type Flag common.Flag
+
+func (f Flag) InitRouter() {
 	r := echo.New()
 	r.HideBanner = true
+	r.Debug = f.Debug
 
 	r.Use(echologrus.Logger(nil, true), middleware.Recover(), Cors())
 
@@ -27,7 +30,8 @@ func InitRouter(f common.Flag) {
 	r.StaticFS(common.WebRoot, pkg.StaticFS())
 	r.GET("/", func(c echo.Context) error { return c.Redirect(http.StatusMovedPermanently, common.WebRoot) })
 
-	r.Logger.Fatal(r.Start(":" + f.Port)) // listen
+	go r.Start(":" + f.Port)
+	// r.Logger.Fatal(r.Start(":" + f.Port)) // listen
 }
 
 // Cors 支持跨域访问
