@@ -2,8 +2,8 @@ package common
 
 import (
 	"easyNmon/pkg"
-	"encoding/json"
 	"fmt"
+	jsoniter "github.com/json-iterator/go"
 	"strconv"
 	"time"
 
@@ -28,8 +28,9 @@ func Run(t, c int) {
 			}
 			fmt.Println(line)
 			var md MonData
-			json.Unmarshal([]byte(line), &md)
-			jBytes, _ := json.Marshal(md)
+
+			Handle(jsoniter.UnmarshalFromString(line, &md))
+			jBytes, _ := jsoniter.Marshal(md)
 			m.Parser(jBytes)
 			Handle(m.DB.Save("data.json"))
 			fmt.Println(m.GetKeys("SysInfo"))

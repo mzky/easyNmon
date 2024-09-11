@@ -30,6 +30,7 @@ func (f Flag) InitRouter() {
 	r.GET("/", func(c echo.Context) error { return c.Redirect(http.StatusMovedPermanently, common.WebRoot) })
 
 	r.Logger.Fatal(r.Start(":" + f.Port)) // listen
+
 }
 
 // Cors 支持跨域访问
