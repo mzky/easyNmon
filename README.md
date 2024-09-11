@@ -24,9 +24,6 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 ## 为方便沟通，建了一个QQ群：
 点击链接加入群聊【EasyNmon交流】：https://jq.qq.com/?_wv=1027&k=5sgrpm9
 
-#### ☆ 特别感谢[ElectricBubble](https://github.com/ElectricBubble)提交的代码，使EasyNmon实现完全go语言编码
-
-
 ##
 ## 扩展工具
 
@@ -43,9 +40,9 @@ https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 ## 巨人肩膀：
 
-nmon：http://nmon.sourceforge.net/
+njmon：https://nmon.sourceforge.io/pmwiki.php?n=Site.Njmon
 
-web框架gin：https://github.com/gin-gonic/gin
+web框架echo：https://github.com/labstack/echo
 
 图表插件echarts：http://echarts.baidu.com/
 
@@ -60,7 +57,7 @@ web框架gin：https://github.com/gin-gonic/gin
 
 2、无法创建data文件（不显示图表）
 
-查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在QQ群共享文件夹里
+openAnolis、openEuler、CentOS等系统，有可能需安装依赖包： yum install ncurses*
 
-openAnolis8.4和openEuler22.03，需安装依赖包（CentOS8可能也需要）：yum install ncurses*
+Ubuntu、debian等系统，有可能需安装依赖包： apt install libncurses5
 
