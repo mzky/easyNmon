@@ -11,7 +11,7 @@
 ##
 ## 操作说明：
 
-https://www.jianshu.com/p/c7c36ba14d3e
+http://mzky.cc/post/9.html
 
 ##
 ## 执行文件下载：（以下执行文件不包含源码）
@@ -32,6 +32,7 @@ https://pan.baidu.com/s/1XCeNQPMtymlI79kgNCg1ZA
 
 goodhal的批量部署及监控服务：https://gitee.com/goodhal/ezNmon-Manager
 
+jmeter优化版：https://github.com/mzky/Jmeter-Extension
 
 ##
 ## 更新日志：
@@ -51,14 +52,6 @@ web框架gin：https://github.com/gin-gonic/gin
 前端amazeui：http://amazeui.org
 
 
-## 其它
-#### jmeter4.x/5.x的html报告汉化模版：
-
-https://github.com/mzky/jmeter4.x-cn-report-template
-
-https://github.com/mzky/jmeter5.x-cn-report-template
-
-
 
 ## FAQ
 1、无法创建报告文件（html）
@@ -68,4 +61,6 @@ https://github.com/mzky/jmeter5.x-cn-report-template
 2、无法创建data文件（不显示图表）
 
 查看nmon版本是否正确，根据不同系统配置对应的nmon版本，arm版本在QQ群共享文件夹里
+
+openAnolis8.4和openEuler22.03，需安装依赖包（CentOS8可能也需要）：yum install ncurses*
 

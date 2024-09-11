@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gookit/color"
-	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
@@ -20,7 +19,6 @@ type Flag struct {
 	Analysis  string
 	Host      string
 	NjmonPath string
-	R         echo.Echo
 	ReportDir string
 	Address   string
 }

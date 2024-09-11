@@ -1,8 +1,6 @@
 package common
 
 import (
-	"log"
-
 	"github.com/mzky/utils/memdb"
 	"github.com/tidwall/gjson"
 )
@@ -45,12 +43,6 @@ func (m *Mem) InsertData(result gjson.Result, pkey string) {
 
 func (m *Mem) Parser(data []byte) {
 	m.Parse(data)
-}
-
-func Handle(err error) {
-	if err != nil {
-		log.Println(err)
-	}
 }
 
 func (m *Mem) Parse(j []byte) {
