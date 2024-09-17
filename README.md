@@ -61,3 +61,5 @@ openAnolis、openEuler、CentOS等系统，有可能需安装依赖包： yum in
 
 Ubuntu、debian等系统，有可能需安装依赖包： apt install libncurses5
 
+openAnolis8.4和openEuler22.03，需安装依赖包（CentOS8可能也需要）：yum install ncurses*
+
