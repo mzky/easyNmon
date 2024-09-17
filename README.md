@@ -31,10 +31,11 @@ goodhal的批量部署及监控服务：https://gitee.com/goodhal/ezNmon-Manager
 
 jmeter优化版：https://github.com/mzky/Jmeter-Extension
 
-##
-## 更新日志：
+## 注意
 
-https://github.com/mzky/easyNmon/wiki/ChangeLog
+### 1.x版使用nmon，最新版本下载 https://github.com/mzky/easyNmon/releases/tag/v1.9
+
+### 2.x版使用njmon，最新版本下载 https://github.com/mzky/easyNmon/releases/latest
 
 #### 注意：默认nmon支持CentOS6~7，Ubuntu和SUSE等版本需要-np参数指定对应的版本
 
@@ -42,7 +43,9 @@ https://github.com/mzky/easyNmon/wiki/ChangeLog
 
 njmon：https://nmon.sourceforge.io/pmwiki.php?n=Site.Njmon
 
-web框架echo：https://github.com/labstack/echo
+1.x版使用gin框架：https://github.com/gin-gonic/gin
+
+2.x版使用echo框架（生成的二进制文件非常小）：https://github.com/labstack/echo
 
 图表插件echarts：http://echarts.baidu.com/
 
@@ -57,9 +60,12 @@ web框架echo：https://github.com/labstack/echo
 
 2、无法创建data文件（不显示图表）
 
+
+3、同一个架构不同系统可以使用同一个二进制文件，但需要安装缺少的依赖包
+
 openAnolis、openEuler、CentOS等系统，有可能需安装依赖包： yum install ncurses*
 
 Ubuntu、debian等系统，有可能需安装依赖包： apt install libncurses5
 
-openAnolis8.4和openEuler22.03，需安装依赖包（CentOS8可能也需要）：yum install ncurses*
+
 
