@@ -37,8 +37,6 @@ jmeter优化版：https://github.com/mzky/Jmeter-Extension
 
 ### 2.x版使用njmon，最新版本下载 https://github.com/mzky/easyNmon/releases/latest
 
-#### 注意：默认nmon支持CentOS6~7，Ubuntu和SUSE等版本需要-np参数指定对应的版本
-
 ## 巨人肩膀：
 
 njmon：https://nmon.sourceforge.io/pmwiki.php?n=Site.Njmon
