@@ -4,16 +4,15 @@ import (
 	"easyNmon/pkg"
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
-	"strconv"
 	"time"
 
 	"github.com/mzky/utils/cmd"
 	"github.com/mzky/utils/memdb"
 )
 
-func Run(t, c int) {
+func Run(delay, count string) {
 	cmdOptions := cmd.Options{Buffered: false, Streaming: true}
-	envCmd := cmd.NewCmdOptions(cmdOptions, pkg.Njmon, "-n", "-s", strconv.Itoa(t), "-c", strconv.Itoa(c))
+	envCmd := cmd.NewCmdOptions(cmdOptions, pkg.Njmon, "-n", "-s", delay, "-c", count)
 	ticker := time.NewTicker(time.Second)
 	envCmd.Start()
 	//go kill(pkg.NjMon, time.Second*time.Duration(t*c+2))

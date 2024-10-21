@@ -1,312 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html  lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>服务器性能监控报告</title>
-    <script src="js/echarts.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .chart-container {
-            margin: 10px;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<title>服务器性能监控报告</title>
+	<script src="./js/echarts.min.js"></script>
+	<script src="./js/jquery.min.js"></script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+		}
+		.chart-container {
+			margin: 10px;
+		}
+	</style>
 </head>
 <body style="padding:0px;margin:0">
 <div id="app">
-    <div class="chart-container">
-        <div id="cpuChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
-    </div>
-    <div class="chart-container">
-        <div id="memoryChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
-    </div>
-    <div class="chart-container">
-        <div id="networkChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
-    </div>
-    <div class="chart-container">
-        <div id="diskChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
-    </div>
+	<div class="chart-container">
+		<div id="cpuChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+	</div>
+	<div class="chart-container">
+		<div id="memoryChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+	</div>
+	<div class="chart-container">
+		<div id="networkChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+	</div>
+	<div class="chart-container">
+		<div id="diskChart" style="float:left;width:49.8%;height:450px;border:1px solid #DDD;"></div>
+	</div>
 </div>
 <script>
-    $(document).ready(function() {
-        $.getJSON('data.json', function(data) {
-            // 解析CPU数据
-            var cpuUser = data.Occupy.cpu_total.user;
-            var cpuSys = data.Occupy.cpu_total.sys;
-            var cpuWait = data.Occupy.cpu_total.iowait;
+	$(document).ready(function() {
+		$.getJSON('data.json', function(jsonData) {
+			// 解析CPU数据
+			var cpuUser = jsonData.Occupy.cpu_total.user;
+			var cpuSys = jsonData.Occupy.cpu_total.sys;
+			var cpuWait = jsonData.Occupy.cpu_total.iowait;
 
-            // 解析内存数据
-            var memFree = data.Occupy.proc_meminfo.MemFree.map(value => value / 1024);
-            var memActive = data.Occupy.proc_meminfo.Active.map(value => value / 1024);
-            var memTotal = data.Occupy.proc_meminfo.MemTotal.map(value => value / 1024);
+			// 解析内存数据
+			var memFree = jsonData.Occupy.proc_meminfo.MemFree.map(value => value / 1024);
+			var memActive = jsonData.Occupy.proc_meminfo.Active.map(value => value / 1024);
+			var memTotal = jsonData.Occupy.proc_meminfo.MemTotal.map(value => value / 1024);
 
-            // 解析网络数据
-            var networks = data.Occupy.networks;
+			// 解析网络数据
+			var networks = jsonData.Occupy.networks;
 
-            // 解析磁盘数据
-            var disks = data.Occupy.disks;
+			// 解析磁盘数据
+			var disks = jsonData.Occupy.disks;
 
-            const labels = data.Occupy.timestamp.UTC;
+			const labels = jsonData.Occupy.timestamp.UTC;
 
-            const titleTop = '10';
-            const legendTop = '35';
-            const bgColor = "#F2F8FF";
-            const toolTip = {
-                trigger: 'axis',
-                axisPointer: {
-                    animation: false
-                }
-            };
-            const grid = {
-                top: '70',
-                bottom: '70',
-                left:'50',
-                right:'70',
-                containLabel: true
-            };
-            const toolbox = {
-                show: true,
-                x: '80%',
-                y: '5',
-                feature: {
-                    magicType: {
-                        type: ['line', 'bar']
-                    },
-                    restore: {},
-                    saveAsImage: {}
-                },
-            };
-            const dataZoom = {
-                show: true,
-                start: 0,
-                bottom: '30'
-            };
-            const xAxis = {
-                type: 'category',
-                data: labels,
-                boundaryGap: false,
-            };
-            const markLine = {
-                symbol: 'none',
-                data: [{
-                    type: 'average',
-                }]
-            };
+			const titleTop = '10';
+			const legendTop = '35';
+			const bgColor = "#F2F8FF";
+			const toolTip = {
+				trigger: 'axis',
+				axisPointer: {
+					animation: false
+				}
+			};
+			const grid = {
+				top: '70',
+				bottom: '70',
+				left:'50',
+				right:'70',
+				containLabel: true
+			};
+			const toolbox = {
+				show: true,
+				x: '80%',
+				y: '5',
+				feature: {
+					magicType: {
+						type: ['line', 'bar']
+					},
+					restore: {},
+					saveAsImage: {}
+				},
+			};
+			const dataZoom = {
+				show: true,
+				start: 0,
+				bottom: '30'
+			};
+			const xAxis = {
+				type: 'category',
+				data: labels,
+				boundaryGap: false,
+			};
+			const markLine = {
+				symbol: 'none',
+				data: [{
+					type: 'average',
+				}]
+			};
 
-            // CPU图表
-            var cpuOption = {
-                backgroundColor: bgColor,
-                title: {
-                    top: titleTop,
-                    x: 'center',
-                    text: 'CPU利用率'
-                },
-                tooltip: toolTip,
-                legend: {
-                    top: legendTop,
-                    x: 'center',
-                    data: ['User%', 'Sys%', 'Wait%']
-                },
-                grid: grid,
-                toolbox: toolbox,
-                dataZoom: dataZoom,
-                xAxis: xAxis,
-                yAxis: {
-                    type: 'value',
-                    scale: true,
-                    max: 100,
-                    min: 0,
-                    axisLabel: {
-                        show: true,
-                        interval: 'auto',
-                        formatter: '{value}%'
-                    },
-                    axisTick: {
-                        inside: true
-                    },
-                    scale: true
-                },
-                series: [{
-                    name: 'Sys%',
-                    stack: '总量',
-                    type: 'line',
-                    data: cpuSys,
-                    markLine: markLine
-                },
-                    {
-                        name: 'User%',
-                        type: 'line',
-                        stack: '总量',
-                        data: cpuUser,
-                        markLine: markLine
-                    },
-                    {
-                        name: 'Wait%',
-                        type: 'line',
-                        data: cpuWait,
-                        markLine: markLine
-                    }
-                ]
-            };
+			const baseOption = {
+				backgroundColor: bgColor,
+				tooltip: toolTip,
+				grid: grid,
+				toolbox: toolbox,
+				dataZoom: dataZoom,
+				xAxis: xAxis,
+				yAxis: {
+					type: 'value'
+				},
+				series: []
+			};
 
-            // 内存图表
-            var memoryOption = {
-                backgroundColor: bgColor,
-                title: {
-                    top: titleTop,
-                    x: 'center',
-                    text: '内存使用情况(MB)'
-                },
-                legend: {
-                    top: legendTop,
-                    x: 'center',
-                    data: ['Free', 'Active', 'Total']
-                },
-                tooltip: toolTip,
-                grid: grid,
-                toolbox: toolbox,
-                dataZoom: dataZoom,
-                xAxis: xAxis,
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    name: 'Free',
-                    type: 'line',
-                    data: memFree,
-                    markLine: markLine
-                },
-                    {
-                        name: 'Active',
-                        type: 'line',
-                        data: memActive,
-                        markLine: markLine
-                    },
-                    {
-                        name: 'Total',
-                        type: 'line',
-                        data: memTotal,
-                        markLine: markLine
-                    }
-                ]
-            };
+			// CPU图表
+			var cpuOption = {
+				...baseOption,
+				title: {
+					top: titleTop,
+					x: 'center',
+					text: 'CPU利用率'
+				},
+				legend: {
+					top: legendTop,
+					x: 'center',
+					data: ['User%', 'Sys%', 'Wait%']
+				},
+				yAxis: {
+					...baseOption.yAxis,
+					scale: true,
+					max: 100,
+					min: 0,
+					axisLabel: {
+						show: true,
+						interval: 'auto',
+						formatter: '{value}%'
+					},
+					axisTick: {
+						inside: true
+					},
+					scale: true
+				},
+				series: [
+					{ name: 'Sys%', stack: '总量', type: 'line', data: cpuSys, markLine: markLine },
+					{ name: 'User%', type: 'line', stack: '总量', data: cpuUser, markLine: markLine },
+					{ name: 'Wait%', type: 'line', data: cpuWait, markLine: markLine }
+				]
+			};
+
+			// 内存图表
+			var memoryOption = {
+				...baseOption,
+				title: {
+					top: titleTop,
+					x: 'center',
+					text: '内存使用情况(MB)'
+				},
+				legend: {
+					top: legendTop,
+					x: 'center',
+					data: ['Free', 'Active', 'Total']
+				},
+				series: [
+					{ name: 'Free', type: 'line', data: memFree, markLine: markLine },
+					{ name: 'Active', type: 'line', data: memActive, markLine: markLine },
+					{ name: 'Total', type: 'line', data: memTotal, markLine: markLine }
+				]
+			};
 
 
-            // 动态生成磁盘图表
-            var networkSeries = [];
-            // 处理对象数据
-            for (let key in networks) {
-                networkSeries.push({
-                    name: key + "-Read",
-                    data: networks[key].ibytes
-                });
-                networkSeries.push({
-                    name: key + "-Write",
-                    data: networks[key].obytes
-                });
-            }
-            // 网络图表
-            var networkOption = {
-                backgroundColor: bgColor,
-                title: {
-                    top: titleTop,
-                    x: 'center',
-                    text: '网络使用情况(KB/s)'
-                },
-                legend: {
-                    top: legendTop,
-                    x: 'center',
-                    data: networkSeries.map(s => s.name),
-                },
-                tooltip: toolTip,
-                grid: grid,
-                toolbox: toolbox,
-                dataZoom: dataZoom,
-                xAxis: xAxis,
-                yAxis: {
-                    type: 'value'
-                },
-                series: networkSeries.map(s => ({
-                    name: s.name,
-                    type: 'line',
-                    data: s.data.map(value => value / 1024),
-                    markLine: markLine
-                }))
-            };
+			// 动态生成网络图表
+			var networkSeries = Object.keys(networks).reduce((acc, key) => {
+				acc.push({
+					name: key + "-Read",
+					data: networks[key].ibytes
+				});
+				acc.push({
+					name: key + "-Write",
+					data: networks[key].obytes
+				});
+				return acc;
+			}, []);
+			// 网络图表
+			var networkOption = {
+				...baseOption,
+				title: {
+					top: titleTop,
+					x: 'center',
+					text: '网络使用情况(KB/s)'
+				},
+				legend: {
+					top: legendTop,
+					x: 'center',
+					data: networkSeries.map(s => s.name),
+				},
+				series: networkSeries.map(s => ({
+					name: s.name,
+					type: 'line',
+					data: s.data.map(value => value / 1024),
+					markLine: markLine
+				}))
+			};
 
 
-            // 动态生成磁盘图表
-            var diskSeries = [];
-            // 处理对象数据
-            for (let key in disks) {
-                diskSeries.push({
-                    name: key + "-Read",
-                    data: disks[key].reads
-                });
-                diskSeries.push({
-                    name: key + "-Write",
-                    data: disks[key].writes
-                });
-            }
-            // 磁盘图表
-            var diskOption = {
-                backgroundColor: bgColor,
-                title: {
-                    top: titleTop,
-                    x: 'center',
-                    text: '磁盘读写速率(KB/s)'
-                },
-                legend: {
-                    top: legendTop,
-                    x: 'center',
-                    data: diskSeries.map(s => s.name),
-                },
-                tooltip: toolTip,
-                grid: grid,
-                toolbox: toolbox,
-                dataZoom: dataZoom,
-                xAxis: xAxis,
-                yAxis: {
-                    type: 'value'
-                },
-                series: diskSeries.map(s => ({
-                    name: s.name,
-                    type: 'line',
-                    data: s.data.map(value => value / 1024),
-                    markLine: markLine
-                }))
-            };
+			// 动态生成磁盘图表
+			var diskSeries = Object.keys(disks).reduce((acc, key) => {
+				acc.push({
+					name: key + "-Read",
+					data: disks[key].reads
+				});
+				acc.push({
+					name: key + "-Write",
+					data: disks[key].writes
+				});
+				return acc;
+			}, []);
+			// 磁盘图表
+			var diskOption = {
+				...baseOption,
+				title: {
+					top: titleTop,
+					x: 'center',
+					text: '磁盘读写速率(KB/s)'
+				},
+				legend: {
+					top: legendTop,
+					x: 'center',
+					data: diskSeries.map(s => s.name)
+				},
+				series: diskSeries.map(s => ({
+					name: s.name,
+					type: 'line',
+					data: s.data.map(value => value / 1024),
+					markLine: markLine
+				}))
+			};
 
+			// 初始化图表
+			var cpuChart = echarts.init(document.getElementById('cpuChart'));
+			var memoryChart = echarts.init(document.getElementById('memoryChart'));
+			var networkChart = echarts.init(document.getElementById('networkChart'));
+			var diskChart = echarts.init(document.getElementById('diskChart'));
 
-            // 初始化图表
-            var cpuChart = echarts.init(document.getElementById('cpuChart'));
-            var memoryChart = echarts.init(document.getElementById('memoryChart'));
-            var networkChart = echarts.init(document.getElementById('networkChart'));
-            var diskChart = echarts.init(document.getElementById('diskChart'));
+			// 设置图表选项
+			cpuChart.setOption(cpuOption);
+			memoryChart.setOption(memoryOption);
+			networkChart.setOption(networkOption);
+			diskChart.setOption(diskOption);
 
-            // 设置图表选项
-            cpuChart.setOption(cpuOption);
-            memoryChart.setOption(memoryOption);
-            networkChart.setOption(networkOption);
-            diskChart.setOption(diskOption);
-
-            // setInterval(function() {
-            // 	cpuChart.setOption(cpuOption);
-            // 	memoryChart.setOption(memoryOption);
-            // 	networkChart.setOption(networkOption);
-            // 	diskChart.setOption(diskOption);
-            // }, {{loopTime}});
-
-
-            // 监听窗口大小改变事件
-            window.addEventListener('resize', function() {
-                // 当窗口大小改变时，重新加载数据并更新图表
-                location.reload();
-            });
-        });
-    });
+			// setInterval(function() {
+			// 	cpuChart.setOption(cpuOption);
+			// 	memoryChart.setOption(memoryOption);
+			// 	networkChart.setOption(networkOption);
+			// 	diskChart.setOption(diskOption);
+			// }, {{loopTime}});
+			window.addEventListener('resize', function() {
+				cpuChart.resize();
+				memoryChart.resize();
+				networkChart.resize();
+				diskChart.resize();
+			});
+		});
+	});
 </script>
 </body>
 </html>

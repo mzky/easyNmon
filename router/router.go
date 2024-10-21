@@ -10,12 +10,10 @@ import (
 	"net/http"
 )
 
-type Flag common.Flag
-
-func (f Flag) InitRouter() {
+func InitRouter(flag *common.Flag) {
 	r := echo.New()
 	r.HideBanner = true
-	r.Debug = f.Debug
+	r.Debug = flag.Debug
 
 	r.Use(echologrus.Logger(nil, true), middleware.Recover(), Cors())
 
@@ -27,9 +25,11 @@ func (f Flag) InitRouter() {
 	r.GET("/stop", controllers.Stop)
 
 	r.StaticFS(common.WebRoot, pkg.StaticFS())
-	r.GET("/", func(c echo.Context) error { return c.Redirect(http.StatusMovedPermanently, common.WebRoot) })
+	r.GET("/", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, common.WebRoot)
+	})
 
-	r.Logger.Fatal(r.Start(":" + f.Port)) // listen
+	r.Logger.Fatal(r.Start(":" + flag.Port)) // listen
 
 }
 
